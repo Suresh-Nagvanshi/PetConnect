@@ -52,7 +52,7 @@ function TrendingAnimals() {
 
   return (
     <div className="mt-[560px] px-4 py-6">
-      <h2 className="text-4xl font-bold mb-4">Trending Animals</h2>
+      <h2 className="text-4xl font-bold mb-4">Experiment for merge conflict</h2>
       <div
         ref={scrollRef}
         className="flex gap-8 overflow-x-auto no-scrollbar py-6 bg-gray-200"
