@@ -163,7 +163,7 @@ function AboutUs() {
               <div className="text-center backdrop-blur-sm bg-white/10 rounded-2xl p-6 border border-white/20">
                 <div className="w-32 h-32 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full mx-auto mb-4 flex items-center justify-center">
                   <img 
-                    src="/public/ceo.jpg" 
+                    src="/ceo.jpg" 
                     alt="Nagvanshi" 
                     className="w-32 h-32 rounded-full object-cover"
                   />
@@ -178,7 +178,7 @@ function AboutUs() {
               <div className="text-center backdrop-blur-sm bg-white/10 rounded-2xl p-6 border border-white/20">
                 <div className="w-32 h-32 bg-gradient-to-br from-green-400 to-blue-500 rounded-full mx-auto mb-4 flex items-center justify-center">
                   <img 
-                    src="/public/Nihal.jpg" 
+                    src="/nihal.jpg" 
                     alt="Nihal Panwar" 
                     className="w-32 h-32 rounded-full object-cover"
                   />
@@ -193,7 +193,7 @@ function AboutUs() {
               <div className="text-center backdrop-blur-sm bg-white/10 rounded-2xl p-6 border border-white/20">
                 <div className="w-32 h-32 bg-gradient-to-br from-orange-400 to-red-500 rounded-full mx-auto mb-4 flex items-center justify-center">
                   <img 
-                    src="/public/ankita.png" 
+                    src="/ankita.png" 
                     alt="Ankita Joseph" 
                     className="w-32 h-32 rounded-full object-cover"
                   />
@@ -208,7 +208,7 @@ function AboutUs() {
               <div className="text-center backdrop-blur-sm bg-white/10 rounded-2xl p-6 border border-white/20">
                 <div className="w-32 h-32 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full mx-auto mb-4 flex items-center justify-center">
                   <img 
-                    src="/public/shraddha.png" 
+                    src="/shraddha.png" 
                     alt="Shradha" 
                     className="w-32 h-32 rounded-full object-cover"
                   />
