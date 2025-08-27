@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+// --- SVG ICONS ---
 // SVG Icon for Google
 const GoogleIcon = () => (
     <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -17,116 +18,115 @@ const FacebookIcon = () => (
     </svg>
 );
 
+// SVG Icon for Back Arrow
+const BackArrowIcon = () => (
+    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+    </svg>
+);
 
-// Main Registration Component
-function PetConnectRegister() {
+
+// --- REUSABLE FORM COMPONENTS ---
+// Generic Input component for forms
+const FormInput = ({ id, label, type = 'text', placeholder, required = true }) => (
+    <div>
+        <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-2">
+            {label}
+        </label>
+        <input
+            type={type}
+            id={id}
+            name={id}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+            placeholder={placeholder}
+            required={required}
+        />
+    </div>
+);
+
+// --- ROLE-SPECIFIC REGISTRATION FORMS ---
+// Form for Buyers
+const BuyerForm = () => (
+    <form className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormInput id="firstName" label="First Name" placeholder="Enter your first name" />
+            <FormInput id="lastName" label="Last Name" placeholder="Enter your last name" />
+        </div>
+        <FormInput id="email" label="Email Address" type="email" placeholder="you@example.com" />
+        <FormInput id="password" label="Password" type="password" placeholder="Create a strong password" />
+        <FormInput id="confirmPassword" label="Confirm Password" type="password" placeholder="Confirm your password" />
+    </form>
+);
+
+// Form for Sellers (can be individual pet owners or businesses)
+const SellerForm = () => (
+    <form className="space-y-4">
+        <FormInput id="sellerName" label="Full Name / Business Name" placeholder="Your name or business name" />
+        <FormInput id="businessType" label="Business Type (Optional)" placeholder="e.g., Breeder, Shelter, Pet Shop" required={false} />
+        <FormInput id="registrationNumber" label="Business Registration No. (Optional)" placeholder="Official registration number" required={false} />
+        <FormInput id="sellerEmail" label="Email" type="email" placeholder="contact@example.com" />
+        <FormInput id="sellerPassword" label="Password" type="password" placeholder="Create a secure password" />
+        <FormInput id="confirmSellerPassword" label="Confirm Password" type="password" placeholder="Confirm your password" />
+    </form>
+);
+
+// Form for Veterinarians
+const VeterinarianForm = () => (
+    <form className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+             <FormInput id="vetFirstName" label="First Name" placeholder="Enter your first name" />
+             <FormInput id="vetLastName" label="Last Name" placeholder="Enter your last name" />
+        </div>
+        <FormInput id="clinicName" label="Clinic/Hospital Name" placeholder="e.g., The Pet Clinic" />
+        <FormInput id="licenseNumber" label="Veterinary License Number" placeholder="Enter your license number" />
+        <FormInput id="vetEmail" label="Email Address" type="email" placeholder="you@example.com" />
+        <FormInput id="vetPassword" label="Password" type="password" placeholder="Create a password" />
+        <FormInput id="confirmVetPassword" label="Confirm Password" type="password" placeholder="Confirm your password" />
+    </form>
+);
+
+
+// --- MAIN APP COMPONENT ---
+function App() {
+    // 'selection' displays the role choice page, 'register' displays the form
+    const [view, setView] = useState('selection'); 
     // State to manage which registration form is active: 'buyer', 'seller', or 'veterinarian'
     const [activeRole, setActiveRole] = useState('buyer');
 
-    // Generic Input component for forms
-    const FormInput = ({ id, label, type = 'text', placeholder, required = true }) => (
-        <div>
-            <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-2">
-                {label}
-            </label>
-            <input
-                type={type}
-                id={id}
-                name={id}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-                placeholder={placeholder}
-                required={required}
-            />
-        </div>
-    );
-
-    // Form for Buyers
-    const BuyerForm = () => (
-        <form className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormInput id="firstName" label="First Name" placeholder="Enter your first name" />
-                <FormInput id="lastName" label="Last Name" placeholder="Enter your last name" />
-            </div>
-            <FormInput id="email" label="Email Address" type="email" placeholder="you@example.com" />
-            <FormInput id="password" label="Password" type="password" placeholder="Create a strong password" />
-            <FormInput id="confirmPassword" label="Confirm Password" type="password" placeholder="Confirm your password" />
-        </form>
-    );
-
-    // Form for Sellers (can be individual pet owners or businesses)
-    const SellerForm = () => (
-        <form className="space-y-4">
-            <FormInput id="sellerName" label="Full Name / Business Name" placeholder="Your name or business name" />
-            <FormInput id="businessType" label="Business Type (Optional)" placeholder="e.g., Breeder, Shelter, Pet Shop" required={false} />
-            <FormInput id="registrationNumber" label="Business Registration No. (Optional)" placeholder="Official registration number" required={false} />
-            <FormInput id="sellerEmail" label="Email" type="email" placeholder="contact@example.com" />
-            <FormInput id="sellerPassword" label="Password" type="password" placeholder="Create a secure password" />
-            <FormInput id="confirmSellerPassword" label="Confirm Password" type="password" placeholder="Confirm your password" />
-        </form>
-    );
-
-    // Form for Veterinarians
-    const VeterinarianForm = () => (
-        <form className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                 <FormInput id="vetFirstName" label="First Name" placeholder="Enter your first name" />
-                 <FormInput id="vetLastName" label="Last Name" placeholder="Enter your last name" />
-            </div>
-            <FormInput id="clinicName" label="Clinic/Hospital Name" placeholder="e.g., The Pet Clinic" />
-            <FormInput id="licenseNumber" label="Veterinary License Number" placeholder="Enter your license number" />
-            <FormInput id="vetEmail" label="Email Address" type="email" placeholder="you@example.com" />
-            <FormInput id="vetPassword" label="Password" type="password" placeholder="Create a password" />
-            <FormInput id="confirmVetPassword" label="Confirm Password" type="password" placeholder="Confirm your password" />
-        </form>
-    );
-
-    // Function to render the correct form based on the active role
-    const renderForm = () => {
-        switch (activeRole) {
-            case 'buyer':
-                return <BuyerForm />;
-            case 'seller':
-                return <SellerForm />;
-            case 'veterinarian':
-                return <VeterinarianForm />;
-            default:
-                return <BuyerForm />;
-        }
+    // Function to handle role selection and switch to the registration view
+    const handleRoleSelect = (role) => {
+        setActiveRole(role);
+        setView('register');
     };
-    
-    // Common button styles for the role selector
-    const roleButtonClasses = (role) => 
-        `flex-1 py-3 px-4 rounded-lg font-semibold text-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-            activeRole === role
-                ? 'bg-white text-blue-600 shadow-md'
-                : 'text-gray-600 hover:bg-gray-200 hover:text-blue-600'
-        }`;
 
-    return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center px-4 py-12">
-            <div className="max-w-lg w-full bg-white rounded-2xl shadow-2xl overflow-hidden">
+    // --- REGISTRATION VIEW COMPONENT ---
+    const RegistrationView = () => {
+        const roleInfo = {
+            buyer: { title: "Buyer", form: <BuyerForm /> },
+            seller: { title: "Seller", form: <SellerForm /> },
+            veterinarian: { title: "Veterinarian", form: <VeterinarianForm /> }
+        };
+
+        const currentRole = roleInfo[activeRole];
+
+        return (
+            <div className="max-w-lg w-full bg-white rounded-2xl shadow-2xl overflow-hidden animate-fade-in">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white text-center">
-                    <h2 className="text-3xl font-bold mb-2">Join PetConnect</h2>
-                    <p className="text-blue-100">Create your account by selecting a role below</p>
-                </div>
-
-                {/* Role Selector Tabs */}
-                <div className="flex bg-gray-100 p-1 space-x-1">
-                    <button onClick={() => setActiveRole('buyer')} className={roleButtonClasses('buyer')}>
-                        Buyer
+                <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white text-center relative">
+                    <button 
+                        onClick={() => setView('selection')} 
+                        className="absolute top-1/2 left-4 -translate-y-1/2 text-white hover:bg-white/20 rounded-full p-2 transition-colors"
+                        aria-label="Go back to role selection"
+                    >
+                        <BackArrowIcon />
                     </button>
-                    <button onClick={() => setActiveRole('seller')} className={roleButtonClasses('seller')}>
-                        Seller
-                    </button>
-                    <button onClick={() => setActiveRole('veterinarian')} className={roleButtonClasses('veterinarian')}>
-                        Veterinarian
-                    </button>
+                    <h2 className="text-3xl font-bold">Register as a {currentRole.title}</h2>
+                    <p className="text-blue-100 mt-1">Create your PetConnect account</p>
                 </div>
 
                 {/* Form Area */}
                 <div className="p-6 sm:p-8">
-                    {renderForm()}
+                    {currentRole.form}
 
                     {/* Terms and Conditions */}
                     <div className="mt-6 flex items-start">
@@ -174,8 +174,75 @@ function PetConnectRegister() {
                     </div>
                 </div>
             </div>
+        );
+    };
+
+    // --- ROLE SELECTION VIEW COMPONENT ---
+    const RoleSelectionView = () => {
+        const RoleCard = ({ role, title, description, imageUrl, onSelect }) => (
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden text-center transform hover:-translate-y-2 transition-transform duration-300 group">
+                <img src={imageUrl} alt={title} className="w-full h-48 object-cover" onError={(e) => { e.target.onerror = null; e.target.src='https://placehold.co/600x400/e2e8f0/4a5568?text=Image+Not+Found'; }} />
+                <div className="p-6">
+                    <h3 className="text-2xl font-bold text-gray-800">{title}</h3>
+                    <p className="mt-2 text-gray-600">{description}</p>
+                    <button 
+                        onClick={() => onSelect(role)}
+                        className="mt-6 w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-300 group-hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    >
+                        Get Started
+                    </button>
+                </div>
+            </div>
+        );
+
+        return (
+            <div className="max-w-4xl w-full text-center animate-fade-in py-15 md:py-20">
+                <h1 className="text-4xl md:text-5xl font-bold text-gray-800">Join PetConnect</h1>
+                <p className="mt-4 text-lg text-gray-600">Choose your role to create an account and connect with the pet community.</p>
+                <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <RoleCard 
+                        role="buyer"
+                        title="I'm a Buyer"
+                        description="Find your new best friend. Browse listings from trusted sellers and shelters."
+                        imageUrl="https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?auto=compress&cs=tinysrgb&w=600"
+                        onSelect={handleRoleSelect}
+                    />
+                    <RoleCard 
+                        role="seller"
+                        title="I'm a Seller"
+                        description="Connect with loving homes. List pets for sale or adoption with our easy tools."
+                        imageUrl="https://images.pexels.com/photos/164186/pexels-photo-164186.jpeg?auto=compress&cs=tinysrgb&w=600"
+                        onSelect={handleRoleSelect}
+                    />
+                    <RoleCard 
+                        role="veterinarian"
+                        title="I'm a Veterinarian"
+                        description="Provide trusted care. Verify pet health records and connect with clients."
+                        imageUrl="https://images.pexels.com/photos/6235116/pexels-photo-6235116.jpeg?auto=compress&cs=tinysrgb&w=600"
+                        onSelect={handleRoleSelect}
+                    />
+                </div>
+            </div>
+        );
+    };
+
+    // Main return statement to switch between views
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+            {/* Some simple CSS for the fade-in animation */}
+            <style>{`
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: scale(0.95); }
+                    to { opacity: 1; transform: scale(1); }
+                }
+                .animate-fade-in {
+                    animation: fadeIn 0.5s ease-out forwards;
+                }
+            `}</style>
+
+            {view === 'selection' ? <RoleSelectionView /> : <RegistrationView />}
         </div>
     );
 }
 
-export default PetConnectRegister;
+export default App;

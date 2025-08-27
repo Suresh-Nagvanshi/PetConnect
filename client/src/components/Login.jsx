@@ -72,7 +72,7 @@ function PetConnectLogin() {
     );
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center px-4 py-12">
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center px-4 py-24">
             <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden">
                 {/* Header */}
                 <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-6 text-white text-center">
