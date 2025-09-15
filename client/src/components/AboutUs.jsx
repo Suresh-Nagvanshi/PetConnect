@@ -199,7 +199,7 @@ function AboutUs() {
               <div className="text-center backdrop-blur-sm bg-white/10 rounded-xl p-3 w-48 mx-auto border border-white/20">
                 <div className="w-32 h-32 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full mx-auto mb-4 flex items-center justify-center">
                   <img 
-                    src="/ceo.jpg" 
+                    src="/suresh.jpg" 
                     alt="Nagvanshi" 
                     className="w-32 h-32 rounded-full object-cover"
                   />
@@ -229,7 +229,7 @@ function AboutUs() {
               <div className="text-center backdrop-blur-sm bg-white/10 rounded-xl p-3 w-48 mx-auto border border-white/20">
                 <div className="w-32 h-32 bg-gradient-to-br from-orange-400 to-red-500 rounded-full mx-auto mb-4 flex items-center justify-center">
                   <img 
-                    src="/ankita.png" 
+                    src="/ankita.jpg" 
                     alt="Ankita Joseph" 
                     className="w-32 h-32 rounded-full object-cover"
                   />
