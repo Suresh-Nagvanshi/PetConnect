@@ -1,6 +1,42 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; 
 
 function AboutUs() {
+  const navigate = useNavigate();
+  // Smooth scroll function for anchor links
+  const smoothScrollTo = (targetId) => {
+    const element = document.getElementById(targetId);
+    if (element) {
+      // First scroll to top smoothly
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+      
+      // Then scroll to target after a delay
+      setTimeout(() => {
+        element.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 800);
+    }
+  };
+
+  // Smooth navigation function for React Router links
+  const smoothNavigate = (path) => {
+    // First scroll to top smoothly
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    
+    // Then navigate after scrolling
+    setTimeout(() => {
+      navigate(path);
+    }, 500);
+  };
+
   return (
     <div className="min-h-screen relative bg-gradient-to-br from-gray-50 to-blue-50">
       {/* Subtle Background Pattern */}
@@ -159,8 +195,8 @@ function AboutUs() {
         <div className="bg-gradient-to-br from-gray-900 to-blue-900 text-white py-20">
           <div className="max-w-6xl mx-auto px-6">
             <h2 className="text-4xl font-bold text-center mb-16">Our Team</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              <div className="text-center backdrop-blur-sm bg-white/10 rounded-2xl p-6 border border-white/20">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2">
+              <div className="text-center backdrop-blur-sm bg-white/10 rounded-xl p-3 w-48 mx-auto border border-white/20">
                 <div className="w-32 h-32 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full mx-auto mb-4 flex items-center justify-center">
                   <img 
                     src="/ceo.jpg" 
@@ -175,7 +211,7 @@ function AboutUs() {
                 </p>
               </div>
               
-              <div className="text-center backdrop-blur-sm bg-white/10 rounded-2xl p-6 border border-white/20">
+              <div className="text-center backdrop-blur-sm bg-white/10 rounded-xl p-3 w-48 mx-auto border border-white/20">
                 <div className="w-32 h-32 bg-gradient-to-br from-green-400 to-blue-500 rounded-full mx-auto mb-4 flex items-center justify-center">
                   <img 
                     src="/nihal.jpg" 
@@ -190,7 +226,7 @@ function AboutUs() {
                 </p>
               </div>
               
-              <div className="text-center backdrop-blur-sm bg-white/10 rounded-2xl p-6 border border-white/20">
+              <div className="text-center backdrop-blur-sm bg-white/10 rounded-xl p-3 w-48 mx-auto border border-white/20">
                 <div className="w-32 h-32 bg-gradient-to-br from-orange-400 to-red-500 rounded-full mx-auto mb-4 flex items-center justify-center">
                   <img 
                     src="/ankita.png" 
@@ -205,7 +241,7 @@ function AboutUs() {
                 </p>
               </div>
               
-              <div className="text-center backdrop-blur-sm bg-white/10 rounded-2xl p-6 border border-white/20">
+              <div className="text-center backdrop-blur-sm bg-white/10 rounded-xl p-3 w-48 mx-auto border border-white/20">
                 <div className="w-32 h-32 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full mx-auto mb-4 flex items-center justify-center">
                   <img 
                     src="/shraddha.png" 
@@ -217,6 +253,20 @@ function AboutUs() {
                 <p className="text-blue-200">Community Manager</p>
                 <p className="text-gray-300 text-sm mt-2">
                   Dedicated to fostering meaningful connections within our pet-loving community.
+                </p>
+              </div>
+              <div className="text-center backdrop-blur-sm bg-white/10 rounded-xl p-3 w-48 mx-auto border border-white/20">
+                <div className="w-32 h-32 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+                  <img 
+                    src="/abhinav.jpg" 
+                    alt="Abhinav G" 
+                    className="w-32 h-32 rounded-full object-cover"
+                  />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Abhinav G</h3>
+                <p className="text-blue-200">Frontend Developer</p>
+                <p className="text-gray-300 text-sm mt-2">
+                 Dedicated to building a user-friendly and responsive frontend.
                 </p>
               </div>
             </div>
@@ -231,7 +281,9 @@ function AboutUs() {
               the joy of pet companionship. Start your journey with us today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300">
+              <button onClick={() => smoothNavigate('/register')}
+                className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300"
+              >
                 Get Started
               </button>
               <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors duration-300">
