@@ -222,7 +222,7 @@ function AboutUs() {
                 <h3 className="text-xl font-semibold mb-2">Nihal Panwar</h3>
                 <p className="text-blue-200">Head of Technology</p>
                 <p className="text-gray-300 text-sm mt-2">
-                  Tech enthusiast
+                  Expert in crafting scalable software architectures and driving technology innovation across projects
                 </p>
               </div>
               
