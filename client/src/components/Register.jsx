@@ -4,10 +4,10 @@ import React, { useState } from 'react';
 
 // Combined Buyer/Seller Form
 const BuyerSellerForm = () => (
-  <form className="space-y-4">
+<form className="space-y-4">
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <FormInput id="firstName" label="First Name" placeholder="Enter your first name" />
-      <FormInput id="lastName" label="Last Name" placeholder="Enter your last name" />
+    <FormInput id="firstName" label="First Name" placeholder="Enter your first name" />
+    <FormInput id="lastName" label="Last Name" placeholder="Enter your last name" />
     </div>
     <FormInput id="email" label="Email Address" type="email" placeholder="you@example.com" />
     <FormInput id="password" label="Password" type="password" placeholder="Create a strong password" />
