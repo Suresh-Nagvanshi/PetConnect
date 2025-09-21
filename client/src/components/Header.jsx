@@ -1,39 +1,17 @@
-
-
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Header() {
     const navigate = useNavigate();
 
-    // Smooth scroll function for anchor links
-    const smoothScrollTo = (targetId) => {
-        const element = document.getElementById(targetId);
-        if (element) {
-            // First scroll to top smoothly
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-            
-            // Then scroll to target after a delay
-            setTimeout(() => {
-                element.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }, 800);
-        }
-    };
-
     // Smooth navigation function for React Router links
+    // This scrolls the user to the top of the new page for a clean transition.
     const smoothNavigate = (path) => {
-        // First scroll to top smoothly
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
         });
         
-        // Then navigate after scrolling
+        // We wait a moment for the scroll to start before changing the page.
         setTimeout(() => {
             navigate(path);
         }, 500);
@@ -43,7 +21,7 @@ function Header() {
         <header className="fixed top-0 left-0 w-full bg-black z-50">
             <nav className="flex items-center justify-between w-full px-6 py-3">
                 <div className="flex items-center">
-                    <img className="h-10 w-10 rounded-full" src="fav_icon.png" alt="Logo" />
+                    <img className="h-10 w-10 rounded-full" src="/fav_icon.png" alt="Logo" />
                     <Link className="ml-3 text-white italic text-2xl font-bold" to="/">PetConnect</Link>
                 </div>
                 <ul className="flex space-x-3 text-sm text-white italic">
@@ -65,7 +43,7 @@ function Header() {
                     </li>
                     <li>
                         <button
-                            onClick={() => smoothNavigate('/Login')}
+                            onClick={() => smoothNavigate('/login')}
                             className="font-bold px-4 py-2 rounded-lg inline-flex items-center origin-center transform will-change-transform transition-transform duration-200 hover:bg-yellow-400 hover:text-black hover:shadow-md hover:scale-110 active:scale-95"
                         >
                             Login
@@ -73,15 +51,16 @@ function Header() {
                     </li>
                     <li>
                         <button
-                            onClick={() => smoothNavigate('/Register')}
+                            onClick={() => smoothNavigate('/register')}
                             className="font-bold px-4 py-2 rounded-lg inline-flex items-center origin-center transform will-change-transform transition-transform duration-200 hover:bg-yellow-400 hover:text-black hover:shadow-md hover:scale-110 active:scale-95"
                         >
                             Register
                         </button>
                     </li>
                     <li>
+                        {/* THIS IS THE FIX: This button now navigates to the /store page */}
                         <button
-                            onClick={() => smoothScrollTo('store')}
+                            onClick={() => smoothNavigate('/store')}
                             className="font-bold px-4 py-2 rounded-lg inline-flex items-center origin-center transform will-change-transform transition-transform duration-200 hover:bg-yellow-400 hover:text-black hover:shadow-md hover:scale-110 active:scale-95"
                         >
                             Pet Store
@@ -110,3 +89,4 @@ function Header() {
 }
 
 export default Header;
+

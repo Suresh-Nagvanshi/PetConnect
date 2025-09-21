@@ -1,0 +1,66 @@
+/* General styles for registration containers */
+.register-container {
+  padding-top: 100px; /* To avoid content being hidden behind the fixed header */
+  padding-bottom: 50px;
+  min-height: 100vh;
+  background-color: #f7fafc; /* A light gray background */
+}
+
+/* Form container styling */
+.form-container {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Styling for form input fields */
+.form-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  margin-top: 0.5rem;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #4299e1; /* Blue-500 */
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+}
+
+/* Navigation buttons (Next/Previous) styling */
+.nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+.nav-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.prev-button {
+  background-color: #a0aec0; /* Gray-500 */
+}
+
+.prev-button:hover {
+  background-color: #718096; /* Gray-600 */
+}
+
+.next-button {
+  background-color: #4299e1; /* Blue-500 */
+}
+
+.next-button:hover {
+  background-color: #3182ce; /* Blue-600 */
+}
+
