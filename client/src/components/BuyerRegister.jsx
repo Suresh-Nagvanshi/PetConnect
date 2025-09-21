@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import ProgressBar from './ProgressBar.jsx';
 
 const BuyerRegister = () => {
@@ -9,6 +8,7 @@ const BuyerRegister = () => {
     firstName: '',
     lastName: '',
     email: '',
+    password: '',   // Added password field
     phone: '',
     houseNo: '',
     city: '',
@@ -30,6 +30,8 @@ const BuyerRegister = () => {
       if (!formData.lastName.trim()) errors.lastName = "Last name is required";
       if (!formData.email.trim()) errors.email = "Email is required";
       else if (!/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Email is invalid";
+      if (!formData.password.trim()) errors.password = "Password is required";
+      else if (formData.password.length < 6) errors.password = "Password must be at least 6 characters";
       if (!formData.phone.trim()) errors.phone = "Phone number is required";
       else if (!/^\+?[0-9\s-]{7,15}$/.test(formData.phone)) errors.phone = "Phone is invalid";
     }
@@ -53,10 +55,10 @@ const BuyerRegister = () => {
   const nextStep = () => {
     if (validateStep()) setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
   };
+
   const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 0));
 
   const handleSubmit = () => {
-    // Final validation before submitting
     if (!validateStep()) return;
 
     fetch('/api/buyers', {
@@ -128,6 +130,19 @@ const BuyerRegister = () => {
                     placeholder="you@example.com"
                   />
                   {errors.email && <p className="text-red-600 text-sm">{errors.email}</p>}
+                </div>
+
+                <div>
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 text-left">Password</label>
+                  <input
+                    type="password"
+                    id="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Enter your password"
+                  />
+                  {errors.password && <p className="text-red-600 text-sm">{errors.password}</p>}
                 </div>
 
                 <div>

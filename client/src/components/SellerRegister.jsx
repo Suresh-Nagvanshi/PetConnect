@@ -1,30 +1,31 @@
-import React, { useState } from 'react';
-import ProgressBar from './ProgressBar';
+import React, { useState } from "react";
+import ProgressBar from "./ProgressBar";
 
 const SellerRegister = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    houseNo: '',
-    city: '',
-    pincode: '',
-    district: '',
-    state: '',
-    animalType: '',
-    breed: '',
-    petName: '',
-    petAge: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "", // added password
+    phone: "",
+    houseNo: "",
+    city: "",
+    pincode: "",
+    district: "",
+    state: "",
+    animalType: "",
+    breed: "",
+    petName: "",
+    petAge: "",
   });
 
   const steps = [
-    { name: 'Personal Info' },
-    { name: 'Address' },
-    { name: 'Pet Details' },
-    { name: 'Confirm' },
+    { name: "Personal Info" },
+    { name: "Address" },
+    { name: "Pet Details" },
+    { name: "Confirm" }
   ];
 
   const validateStep = () => {
@@ -34,6 +35,8 @@ const SellerRegister = () => {
       if (!formData.lastName.trim()) errors.lastName = "Last name is required";
       if (!formData.email.trim()) errors.email = "Email is required";
       else if (!/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Email is invalid";
+      if (!formData.password.trim()) errors.password = "Password is required";
+      else if (formData.password.length < 6) errors.password = "Password must be at least 6 characters";
       if (!formData.phone.trim()) errors.phone = "Phone number is required";
       else if (!/^\+?[0-9\s-]{7,15}$/.test(formData.phone)) errors.phone = "Phone is invalid";
     }
@@ -49,39 +52,49 @@ const SellerRegister = () => {
       if (!formData.petName.trim()) errors.petName = "Pet name is required";
       if (!formData.petAge.trim()) errors.petAge = "Pet age is required";
       if (!formData.animalType.trim()) errors.animalType = "Animal type is required";
-      if (['dog', 'cat'].includes(formData.animalType.toLowerCase())) {
-        if (!formData.breed.trim()) errors.breed = "Breed is required for dogs and cats";
+      if (
+        ["dog", "cat"].includes(formData.animalType.toLowerCase()) &&
+        !formData.breed.trim()
+      ) {
+        errors.breed = "Breed is required for dogs and cats";
       }
     }
     setErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { id, value } = e.target;
-    setFormData(prev => ({ ...prev, [id]: value }));
+    setFormData(prev => ({
+      ...prev,
+      [id]: value
+    }));
   };
 
-  const nextStep = () => {
+  const next = () => {
     if (validateStep()) setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
   };
 
-  const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 0));
+  const prev = () => {
+    setCurrentStep(prev => Math.max(prev - 1, 0));
+  };
 
   const handleSubmit = () => {
     if (!validateStep()) return;
 
-    fetch('/api/sellers', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
+    fetch("/api/sellers", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(formData)
     })
       .then(res => {
-        if (!res.ok) throw new Error('Failed to register');
+        if (!res.ok) throw new Error("Failed to register");
         return res.json();
       })
-      .then(data => alert(data.message || 'Seller registered successfully!'))
-      .catch(err => alert('Error: ' + err.message));
+      .then(data => alert(data.message || "Seller registered successfully!"))
+      .catch(err => alert(err.message));
   };
 
   return (
@@ -91,206 +104,277 @@ const SellerRegister = () => {
           <h2 className="text-3xl font-bold mb-1">Register as a Seller</h2>
           <p className="text-cyan-100">List a pet and find them a happy home!</p>
         </div>
-
         <div className="p-8">
           <div className="mb-8 flex justify-center">
             <ProgressBar steps={steps} currentStep={currentStep} />
           </div>
-
           <form className="space-y-4" onSubmit={e => e.preventDefault()}>
             {currentStep === 0 && (
-              <section className="space-y-4 animate-fade-in">
-                <h3 className="text-xl font-semibold text-gray-800 mb-4">Step 1: Your Information</h3>
+              <section className="animate-fade-in space-y-4">
+                <h3 className="text-xl mb-4" style={{ fontWeight: 'normal', textAlign: 'left' }}>
+                  Step 1: Personal Info
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 text-left">First Name</label>
+                    <label htmlFor="firstName" className="block text-sm text-gray-700 mb-1" style={{ fontWeight: 'normal', textAlign: 'left' }}>
+                      First Name
+                    </label>
                     <input
                       type="text"
                       id="firstName"
                       value={formData.firstName}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                      className="input"
                       placeholder="Suresh"
                     />
-                    {errors.firstName && <p className="text-red-600 text-sm">{errors.firstName}</p>}
+                    {errors.firstName && (
+                      <p className="text-red-600 text-sm">{errors.firstName}</p>
+                    )}
                   </div>
                   <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 text-left">Last Name</label>
+                    <label htmlFor="lastName" className="block text-sm text-gray-700 mb-1" style={{ fontWeight: 'normal', textAlign: 'left' }}>
+                      Last Name
+                    </label>
                     <input
                       type="text"
                       id="lastName"
                       value={formData.lastName}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                      className="input"
                       placeholder="Nagvanshi"
                     />
-                    {errors.lastName && <p className="text-red-600 text-sm">{errors.lastName}</p>}
+                    {errors.lastName && (
+                      <p className="text-red-600 text-sm">{errors.lastName}</p>
+                    )}
                   </div>
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 text-left">Email</label>
-                  <input
-                    type="email"
-                    id="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                    placeholder="you@example.com"
-                  />
-                  {errors.email && <p className="text-red-600 text-sm">{errors.email}</p>}
-                </div>
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 text-left">Phone Number</label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                    placeholder="+91-9876543210"
-                  />
-                  {errors.phone && <p className="text-red-600 text-sm">{errors.phone}</p>}
+                  <div>
+                    <label htmlFor="email" className="block text-sm text-gray-700 mb-1" style={{ fontWeight: 'normal', textAlign: 'left' }}>
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="input"
+                      placeholder="you@example.com"
+                    />
+                    {errors.email && (
+                      <p className="text-red-600 text-sm">{errors.email}</p>
+                    )}
+                  </div>
+                  <div>
+                    <label htmlFor="password" className="block text-sm text-gray-700 mb-1" style={{ fontWeight: 'normal', textAlign: 'left' }}>
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      id="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      className="input"
+                      placeholder="Enter password"
+                    />
+                    {errors.password && (
+                      <p className="text-red-600 text-sm">{errors.password}</p>
+                    )}
+                  </div>
+                  <div>
+                    <label htmlFor="phone" className="block text-sm text-gray-700 mb-1" style={{ fontWeight: 'normal', textAlign: 'left' }}>
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="input"
+                      placeholder="+91-9876543210"
+                    />
+                    {errors.phone && (
+                      <p className="text-red-600 text-sm">{errors.phone}</p>
+                    )}
+                  </div>
                 </div>
               </section>
             )}
 
             {currentStep === 1 && (
-              <section className="space-y-4 animate-fade-in">
-                <h3 className="text-xl font-semibold text-gray-800 mb-4">Step 2: Your Address</h3>
+              <section className="animate-fade-in space-y-4">
+                <h3 className="text-xl mb-4" style={{ fontWeight: 'normal', textAlign: 'left' }}>
+                  Step 2: Address
+                </h3>
                 <div>
-                  <label htmlFor="houseNo" className="block text-sm font-medium text-gray-700 text-left">House No. / Street Name</label>
+                  <label htmlFor="houseNo" className="block text-sm text-gray-700 mb-1" style={{ fontWeight: 'normal', textAlign: 'left' }}>
+                    House No.
+                  </label>
                   <input
                     type="text"
                     id="houseNo"
                     value={formData.houseNo}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                    placeholder="ex 123 Pet Lane"
+                    className="input"
+                    placeholder="123 Street"
                   />
-                  {errors.houseNo && <p className="text-red-600 text-sm">{errors.houseNo}</p>}
+                  {errors.houseNo && (
+                    <p className="text-red-600 text-sm">{errors.houseNo}</p>
+                  )}
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="city" className="block text-sm font-medium text-gray-700 text-left">City</label>
+                    <label htmlFor="city" className="block text-sm text-gray-700 mb-1" style={{ fontWeight: 'normal', textAlign: 'left' }}>
+                      City
+                    </label>
                     <input
                       type="text"
                       id="city"
                       value={formData.city}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                      placeholder="Ghaziabad"
+                      className="input"
+                      placeholder="City"
                     />
-                    {errors.city && <p className="text-red-600 text-sm">{errors.city}</p>}
+                    {errors.city && (
+                      <p className="text-red-600 text-sm">{errors.city}</p>
+                    )}
                   </div>
                   <div>
-                    <label htmlFor="pincode" className="block text-sm font-medium text-gray-700 text-left">Pincode</label>
+                    <label htmlFor="pincode" className="block text-sm text-gray-700 mb-1" style={{ fontWeight: 'normal', textAlign: 'left' }}>
+                      Pincode
+                    </label>
                     <input
                       type="text"
                       id="pincode"
                       value={formData.pincode}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                      placeholder="ex 201001"
+                      className="input"
+                      placeholder="Pincode"
                     />
-                    {errors.pincode && <p className="text-red-600 text-sm">{errors.pincode}</p>}
+                    {errors.pincode && (
+                      <p className="text-red-600 text-sm">{errors.pincode}</p>
+                    )}
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="district" className="block text-sm font-medium text-gray-700 text-left">District</label>
+                    <label htmlFor="district" className="block text-sm text-gray-700 mb-1" style={{ fontWeight: 'normal', textAlign: 'left' }}>
+                      District
+                    </label>
                     <input
                       type="text"
                       id="district"
                       value={formData.district}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                      placeholder="Ghaziabad"
+                      className="input"
+                      placeholder="District"
                     />
-                    {errors.district && <p className="text-red-600 text-sm">{errors.district}</p>}
+                    {errors.district && (
+                      <p className="text-red-600 text-sm">{errors.district}</p>
+                    )}
                   </div>
                   <div>
-                    <label htmlFor="state" className="block text-sm font-medium text-gray-700 text-left">State</label>
+                    <label htmlFor="state" className="block text-sm text-gray-700 mb-1" style={{ fontWeight: 'normal', textAlign: 'left' }}>
+                      State
+                    </label>
                     <input
                       type="text"
                       id="state"
                       value={formData.state}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                      placeholder="Uttar Pradesh"
+                      className="input"
+                      placeholder="State"
                     />
-                    {errors.state && <p className="text-red-600 text-sm">{errors.state}</p>}
+                    {errors.state && (
+                      <p className="text-red-600 text-sm">{errors.state}</p>
+                    )}
                   </div>
                 </div>
               </section>
             )}
 
             {currentStep === 2 && (
-              <section className="space-y-4 animate-fade-in">
-                <h3 className="text-xl font-semibold text-gray-800 mb-4">Step 3: Pet Details</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="petName" className="block text-sm font-medium text-gray-700 text-left">Pet's Name</label>
-                    <input
-                      type="text"
-                      id="petName"
-                      value={formData.petName}
-                      onChange={handleInputChange}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                      placeholder="ex Buddy"
-                    />
-                    {errors.petName && <p className="text-red-600 text-sm">{errors.petName}</p>}
-                  </div>
-                  <div>
-                    <label htmlFor="petAge" className="block text-sm font-medium text-gray-700 text-left">Pet's Age</label>
-                    <input
-                      type="text"
-                      id="petAge"
-                      value={formData.petAge}
-                      onChange={handleInputChange}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                      placeholder="ex 2 years"
-                    />
-                    {errors.petAge && <p className="text-red-600 text-sm">{errors.petAge}</p>}
-                  </div>
+              <section className="animate-fade-in space-y-4">
+                <h3 className="text-xl mb-4" style={{ fontWeight: 'normal', textAlign: 'left' }}>
+                  Step 3: Pet Details
+                </h3>
+                <div>
+                  <label htmlFor="petName" className="block text-sm text-gray-700 mb-1" style={{ fontWeight: 'normal', textAlign: 'left' }}>
+                    Pet Name
+                  </label>
+                  <input
+                    type="text"
+                    id="petName"
+                    value={formData.petName}
+                    onChange={handleInputChange}
+                    className="input"
+                    placeholder="Buddy"
+                  />
+                  {errors.petName && (
+                    <p className="text-red-600 text-sm">{errors.petName}</p>
+                  )}
                 </div>
                 <div>
-                  <label htmlFor="animalType" className="block text-sm font-medium text-gray-700 text-left">Type of Animal</label>
+                  <label htmlFor="petAge" className="block text-sm text-gray-700 mb-1" style={{ fontWeight: 'normal', textAlign: 'left' }}>
+                    Pet Age
+                  </label>
+                  <input
+                    type="text"
+                    id="petAge"
+                    value={formData.petAge}
+                    onChange={handleInputChange}
+                    className="input"
+                    placeholder="2 years"
+                  />
+                  {errors.petAge && (
+                    <p className="text-red-600 text-sm">{errors.petAge}</p>
+                  )}
+                </div>
+                <div>
+                  <label htmlFor="animalType" className="block text-sm text-gray-700 mb-1" style={{ fontWeight: 'normal', textAlign: 'left' }}>
+                    Animal Type
+                  </label>
                   <input
                     type="text"
                     id="animalType"
                     value={formData.animalType}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                    placeholder="ex Dog, Cat, Rabbit"
+                    className="input"
+                    placeholder="Dog, Cat, Rabbit"
                   />
-                  {errors.animalType && <p className="text-red-600 text-sm">{errors.animalType}</p>}
+                  {errors.animalType && (
+                    <p className="text-red-600 text-sm">{errors.animalType}</p>
+                  )}
                 </div>
-                {['dog', 'cat'].includes(formData.animalType.toLowerCase()) && (
-                  <div className="animate-fade-in">
-                    <label htmlFor="breed" className="block text-sm font-medium text-gray-700 text-left">Breed of {formData.animalType}</label>
+                {["dog", "cat"].includes(formData.animalType.toLowerCase()) && (
+                  <div>
+                    <label htmlFor="breed" className="block text-sm text-gray-700 mb-1" style={{ fontWeight: 'normal', textAlign: 'left' }}>
+                      Breed
+                    </label>
                     <input
                       type="text"
                       id="breed"
                       value={formData.breed}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                      placeholder="ex Golden Retriever, Siamese"
+                      className="input"
+                      placeholder="Golden Retriever"
                     />
-                    {errors.breed && <p className="text-red-600 text-sm">{errors.breed}</p>}
+                    {errors.breed && (
+                      <p className="text-red-600 text-sm">{errors.breed}</p>
+                    )}
                   </div>
                 )}
               </section>
             )}
 
             {currentStep === 3 && (
-              <section className="animate-fade-in">
-                <h3 className="text-xl font-semibold text-gray-800 mb-4">Step 4: Please Confirm All Details</h3>
-                <div className="text-left bg-gray-100 p-6 rounded-lg space-y-3">
-                  <div><strong>Seller Name:</strong> {formData.firstName} {formData.lastName}</div>
-                  <div><strong>Contact:</strong> {formData.email}, {formData.phone}</div>
-                  <hr className="my-2" />
+              <section className="animate-fade-in space-y-4">
+                <h3 className="text-xl mb-4" style={{ fontWeight: 'normal', textAlign: 'left' }}>
+                  Step 4: Please Confirm All Details
+                </h3>
+                <div className="bg-gray-100 p-4 rounded space-y-2">
+                  <div><strong>Name:</strong> {formData.firstName} {formData.lastName}</div>
+                  <div><strong>Email:</strong> {formData.email}</div>
+                  <div><strong>Phone:</strong> {formData.phone}</div>
                   <div><strong>Address:</strong> {formData.houseNo}, {formData.city}, {formData.district}, {formData.state} - {formData.pincode}</div>
-                  <hr className="my-2" />
                   <div><strong>Pet Name:</strong> {formData.petName}</div>
                   <div><strong>Pet Age:</strong> {formData.petAge}</div>
                   <div><strong>Animal Type:</strong> {formData.animalType}</div>
@@ -302,23 +386,23 @@ const SellerRegister = () => {
             <div className="flex justify-between pt-6">
               <button
                 type="button"
-                onClick={prevStep}
-                className={`bg-gray-300 text-gray-800 py-2 px-6 rounded-lg font-semibold ${currentStep === 0 ? 'invisible' : 'visible'}`}
+                onClick={prev}
+                disabled={currentStep === 0}
+                className={`bg-gray-300 text-gray-800 py-2 px-6 rounded-lg font-semibold ${currentStep === 0 ? "invisible" : "visible"}`}
               >
                 Previous
               </button>
-              {currentStep < steps.length - 1 && (
+              {currentStep < steps.length - 1 ? (
                 <button
                   type="button"
-                  onClick={nextStep}
+                  onClick={next}
                   className="bg-blue-600 text-white py-2 px-6 rounded-lg font-semibold"
                 >
                   Next
                 </button>
-              )}
-              {currentStep === steps.length - 1 && (
+              ) : (
                 <button
-                  type="submit"
+                  type="button"
                   onClick={handleSubmit}
                   className="bg-green-600 text-white py-2 px-6 rounded-lg font-semibold"
                 >
@@ -331,12 +415,30 @@ const SellerRegister = () => {
       </div>
 
       <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
+        .input {
+          width: 100%;
+          padding: 0.5rem 0.75rem;
+          border: 1px solid #d1d5db;
+          border-radius: 0.375rem;
+          box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+          transition: border-color 0.2s ease;
+        }
+        .input:focus {
+          outline: none;
+          border-color: #3b82f6;
         }
         .animate-fade-in {
           animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
       `}</style>
     </div>

@@ -4,6 +4,7 @@ const sellerSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },  // Added password field
   phone: { type: String, required: true },
   houseNo: String,
   city: String,
