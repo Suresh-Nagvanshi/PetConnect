@@ -31,6 +31,13 @@ const sellersRouter = require('./routes/sellers');
 // Use sellers router for /api/sellers endpoints
 app.use('/api/sellers', sellersRouter);
 
+// Import vets router for handling vet registrations
+const vetsRouter = require('./routes/vets');
+// Use vets router for /api/vets endpoints
+app.use('/api/vets', vetsRouter);
+
+
+
 
 
 // Root route - test server
