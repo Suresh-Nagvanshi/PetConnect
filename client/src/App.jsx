@@ -11,6 +11,9 @@ import Feedback from './components/Feedback.jsx';
 import Login from './components/Login.jsx';
 import Register from './components/Register.jsx';
 import Footer from './components/Footer.jsx';
+import BuyerRegister from './components/BuyerRegister.jsx';
+import SellerRegister from './components/SellerRegister.jsx';
+import VetRegister from './components/VetRegister.jsx';
 import PetStore from './components/PetStore.jsx';
 
 function App() {
@@ -34,7 +37,15 @@ function App() {
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/feedback" element={<Feedback />} />
+        
+        {/* Main Register Route (Role Selection) */}
         <Route path="/register" element={<Register />} />
+
+        {/* Specific Registration Form Routes */}
+        <Route path="/register/buyer" element={<BuyerRegister />} />
+        <Route path="/register/seller" element={<SellerRegister />} />
+        <Route path="/register/veterinarian" element={<VetRegister />} />
+        
         <Route path="/login" element={<Login />} />
        <Route path="/petstore" element={<PetStore />} />
 
@@ -45,3 +56,4 @@ function App() {
 }
 
 export default App;
+
