@@ -1,17 +1,29 @@
 const express = require('express');
-const router = express.Router();  // <-- define router here
+const bcrypt = require('bcrypt');
+const router = express.Router();
+const Buyer = require('../models/Buyer');
 
-const Buyer = require('../models/Buyer'); // Your Mongoose model
-
-router.post('/', async (req, res) => {    // <-- now 'router' is defined
+router.post('/', async (req, res) => {
   try {
-    const buyerData = req.body;
-    const buyer = new Buyer(buyerData);
-    await buyer.save();
+    const { password, ...rest } = req.body;
+    if (!password || password.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters.' });
+    }
+    // Hash the password before saving
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create and save the buyer with hashed password
+    const newBuyer = new Buyer({
+      ...rest,
+      password: hashedPassword,
+    });
+
+    await newBuyer.save();
+
     res.status(201).json({ message: 'Buyer registered successfully' });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
-module.exports = router;  // Export router to be used in your main app
+module.exports = router;

@@ -37,6 +37,10 @@ const vetsRouter = require('./routes/vets');
 app.use('/api/vets', vetsRouter);
 
 
+// Import auth routes for handling login
+const authRoutes = require('./routes/auth');
+// Use auth routes for /api/auth endpoints
+app.use('/api/auth', authRoutes);
 
 
 
