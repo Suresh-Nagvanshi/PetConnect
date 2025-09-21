@@ -7,39 +7,26 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Import your models
+// Import your models (assumed defined in separate model files)
 const Pet = require('./models/Pet');
 const Feedback = require('./models/Feedback');
 const contactRoutes = require('./routes/contact'); // Import contact route
 
-// Use your contact route
+// Import petstore router
+const productsRouter = require('./routes/products');
+
+// Use your petstore router for /api/pets endpoints
+app.use('/api/products', productsRouter);
+
+// Use contact route for /api/contact
 app.use('/api/contact', contactRoutes);
 
+// Root route - test server
 app.get('/', (req, res) => {
   res.send('PetConnect backend is running!');
 });
 
-// Pet routes
-app.post('/pets', async (req, res) => {
-  try {
-    const pet = new Pet(req.body);
-    await pet.save();
-    res.status(201).json(pet);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get('/pets', async (req, res) => {
-  try {
-    const pets = await Pet.find();
-    res.json(pets);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Feedback route
+// Feedback POST route
 app.post('/feedback', async (req, res) => {
   console.log("Request body:", req.body);
   try {

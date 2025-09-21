@@ -11,6 +11,7 @@ import Feedback from './components/Feedback.jsx';
 import Login from './components/Login.jsx';
 import Register from './components/Register.jsx';
 import Footer from './components/Footer.jsx';
+import PetStore from './components/PetStore.jsx';
 
 function App() {
   return (
@@ -35,6 +36,8 @@ function App() {
         <Route path="/feedback" element={<Feedback />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+       <Route path="/petstore" element={<PetStore />} />
+
       </Routes>
       <Footer />
     </div>
