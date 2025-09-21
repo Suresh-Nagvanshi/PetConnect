@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-// SVG Icon components omitted for brevity
 
 function Login() {
   const navigate = useNavigate();
@@ -9,6 +7,13 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+
+  useEffect(() => {
+    const loggedBuyer = localStorage.getItem('buyer');
+    if (loggedBuyer) {
+      navigate('/buyer_home', { replace: true });
+    }
+  }, [navigate]);
 
   const roleButtonClasses = (role) =>
     `flex-1 py-3 px-4 rounded-lg font-semibold text-center transition-all duration-300 ${
@@ -34,7 +39,6 @@ function Login() {
           return;
         }
 
-        // Save logged-in info to localStorage under "buyer" key for Buyer role
         if (data.role === 'buyer') {
           localStorage.setItem('buyer', JSON.stringify({
             firstName: data.firstName || 'User',
@@ -43,7 +47,7 @@ function Login() {
             role: data.role,
           }));
           console.log('Navigating to /buyer_home');
-          navigate('/buyer_home');
+          navigate('/buyer_home', { replace: true });
         } else {
           alert('Currently only Buyer login is supported');
         }
@@ -111,7 +115,26 @@ function Login() {
             </button>
           </form>
 
-          {/* Social Login buttons omitted for brevity */}
+          {/* Social Login Buttons */}
+          <div className="mt-6 space-y-4">
+            <button
+              type="button"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors text-gray-700 font-semibold"
+              aria-label="Sign in with Google"
+            >
+              <i className="fab fa-google fa-lg"></i>
+              Continue with Google
+            </button>
+
+            <button
+              type="button"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors text-gray-700 font-semibold"
+              aria-label="Sign in with Facebook"
+            >
+              <i className="fab fa-facebook-f fa-lg"></i>
+              Continue with Facebook
+            </button>
+          </div>
 
         </div>
       </div>

@@ -1,6 +1,7 @@
 import './styles/index.css';
 import './styles/App.css';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import Header from './components/Header.jsx';
 import Home from './components/Home.jsx';
 import TrendingAnimals from './components/TrendingAnimals.jsx';
@@ -15,45 +16,88 @@ import BuyerRegister from './components/BuyerRegister.jsx';
 import SellerRegister from './components/SellerRegister.jsx';
 import VetRegister from './components/VetRegister.jsx';
 import PetStore from './components/PetStore.jsx';
+import BuyerHome from "./components/BuyerHome.jsx";
 
-function App() {
+function PrivateRoute({ children }) {
+  const buyer = localStorage.getItem('buyer');
+  if (!buyer) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+}
+
+// Wrapper component for home that redirects logged-in buyers
+function HomeRedirect() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const buyer = localStorage.getItem('buyer');
+    if (buyer) {
+      navigate('/buyer_home', { replace: true });
+    }
+  }, [navigate]);
+
   return (
-    <div>
-      <Header />
+    <>
+      <div id="home">
+        <Home />
+      </div>
+      <div id="trending">
+        <TrendingAnimals />
+      </div>
+      <div id="services">
+        <OurServices />
+      </div>
+    </>
+  );
+}
+
+function AppContent() {
+  const location = useLocation();
+  const hideHeaderRoutes = ['/buyer_home', '/seller_home', '/vet_home'];
+
+  const shouldHideHeader = hideHeaderRoutes.some((path) =>
+    location.pathname.startsWith(path)
+  );
+
+  return (
+    <>
+      {!shouldHideHeader && <Header />}
       <Routes>
-        <Route path="/" element={
-          <>
-            <div id="home">
-              <Home />
-            </div>
-            <div id="trending">
-              <TrendingAnimals />
-            </div>
-            <div id="services">
-              <OurServices />
-            </div>
-          </>
-        } />
+        <Route path="/" element={<HomeRedirect />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/feedback" element={<Feedback />} />
-        
-        {/* Main Register Route (Role Selection) */}
+
         <Route path="/register" element={<Register />} />
 
-        {/* Specific Registration Form Routes */}
         <Route path="/register/buyer" element={<BuyerRegister />} />
         <Route path="/register/seller" element={<SellerRegister />} />
         <Route path="/register/veterinarian" element={<VetRegister />} />
-        
-        <Route path="/login" element={<Login />} />
-       <Route path="/petstore" element={<PetStore />} />
 
+        <Route path="/login" element={<Login />} />
+
+        {/* Protect BuyerHome route */}
+        <Route
+          path="/buyer_home/*"
+          element={
+            <PrivateRoute>
+              <BuyerHome />
+            </PrivateRoute>
+          }
+        />
+
+        <Route path="/petstore" element={<PetStore />} />
       </Routes>
       <Footer />
-    </div>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <AppContent />
   );
 }
 
 export default App;
-

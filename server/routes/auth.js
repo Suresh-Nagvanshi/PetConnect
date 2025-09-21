@@ -32,7 +32,7 @@ router.post('/login', async (req, res) => {
 
     // Authentication successful; optionally create session or JWT token here.
 
-    res.json({ message: 'Login successful', role, userId: user._id });
+    res.json({ message: 'Login successful', role, userId: user._id,firstName: user.firstName });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Server error' });
