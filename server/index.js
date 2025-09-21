@@ -21,6 +21,18 @@ app.use('/api/products', productsRouter);
 // Use contact route for /api/contact
 app.use('/api/contact', contactRoutes);
 
+// Import buyers router for handling buyer registrations
+const buyersRouter = require('./routes/buyers');
+// Use buyers router for /api/buyers endpoints
+app.use('/api/buyers', buyersRouter);
+
+// Import sellers router for handling seller registrations
+const sellersRouter = require('./routes/sellers');
+// Use sellers router for /api/sellers endpoints
+app.use('/api/sellers', sellersRouter);
+
+
+
 // Root route - test server
 app.get('/', (req, res) => {
   res.send('PetConnect backend is running!');
