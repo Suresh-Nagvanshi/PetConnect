@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ProgressBar from "./ProgressBar";
 
 const VetRegister = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
@@ -101,7 +102,10 @@ const VetRegister = () => {
         if (!res.ok) throw new Error("Submission failed");
         return res.json();
       })
-      .then((data) => alert(data.message || "Registration successful!"))
+      .then((data) => {
+        alert(data.message || "Registration successful!");
+        navigate('/', { replace: true });
+      })
       .catch((err) => alert(err.message));
   };
 

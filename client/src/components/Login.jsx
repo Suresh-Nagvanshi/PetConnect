@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+// We need to import 'Link' to create a navigation link to the register page.
+import { useNavigate, Link } from 'react-router-dom';
 
 function Login() {
   const navigate = useNavigate();
@@ -9,9 +10,17 @@ function Login() {
   const [rememberMe, setRememberMe] = useState(false);
 
   useEffect(() => {
-    const loggedBuyer = localStorage.getItem('buyer');
-    if (loggedBuyer) {
-      navigate('/buyer_home', { replace: true });
+    // If any role is already logged in, redirect to its home
+    const roleToPath = {
+      buyer: '/buyer_home',
+      seller: '/seller_home',
+      veterinarian: '/vet_home'
+    };
+    for (const [k, path] of Object.entries(roleToPath)) {
+      if (localStorage.getItem(k)) {
+        navigate(path, { replace: true });
+        break;
+      }
     }
   }, [navigate]);
 
@@ -39,18 +48,22 @@ function Login() {
           return;
         }
 
-        if (data.role === 'buyer') {
-          localStorage.setItem('buyer', JSON.stringify({
-            firstName: data.firstName || 'User',
-            userId: data.userId,
-            email: email,
-            role: data.role,
-          }));
-          console.log('Navigating to /buyer_home');
-          navigate('/buyer_home', { replace: true });
-        } else {
-          alert('Currently only Buyer login is supported');
-        }
+        // Persist role-specific object and clear others
+        const role = data.role || activeRole; // fallback to selected role
+        const userObj = {
+          firstName: data.firstName || 'User',
+          userId: data.userId,
+          email: email,
+          role
+        };
+        ['buyer', 'seller', 'veterinarian', 'vet'].forEach((k) => localStorage.removeItem(k));
+        // store as buyer | seller | vet (normalize vet key to 'vet')
+        const storageKey = role === 'veterinarian' ? 'vet' : role;
+        localStorage.setItem(storageKey, JSON.stringify(userObj));
+
+        if (storageKey === 'buyer') navigate('/buyer_home/petadoption', { replace: true });
+        else if (storageKey === 'seller') navigate('/seller_home/listanimals', { replace: true });
+        else if (storageKey === 'vet') navigate('/vet_home/listservices', { replace: true });
       })
       .catch((err) => {
         console.error('Login failed:', err);
@@ -134,6 +147,17 @@ function Login() {
               <i className="fab fa-facebook-f fa-lg"></i>
               Continue with Facebook
             </button>
+          </div>
+          
+          {/* --- NEW: Register Link --- */}
+          {/* This is the new section you requested. */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              First time here?{' '}
+              <Link to="/register" className="font-semibold text-blue-600 hover:text-blue-800 transition-colors">
+                Register now
+              </Link>
+            </p>
           </div>
 
         </div>

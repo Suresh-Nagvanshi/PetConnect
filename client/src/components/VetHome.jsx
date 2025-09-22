@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 
-function BuyerHome() {
+function VetHome() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [buyerName, setBuyerName] = useState('Buyer');
+  const [vetName, setVetName] = useState('Vet');
   const navigate = useNavigate();
 
   useEffect(() => {
     try {
-      const buyerData = JSON.parse(localStorage.getItem('buyer'));
-      setBuyerName(buyerData?.firstName || 'Buyer');
+      const vet = JSON.parse(localStorage.getItem('vet'));
+      setVetName(vet?.firstName || 'Vet');
     } catch {
-      setBuyerName('Buyer');
+      setVetName('Vet');
     }
   }, []);
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const handleLogout = () => {
-    localStorage.removeItem('buyer');
+    localStorage.removeItem('vet');
     navigate('/login', { replace: true });
   };
 
@@ -36,7 +36,16 @@ function BuyerHome() {
         </button>
       )}
 
-      <Sidebar isOpen={sidebarOpen} onToggle={toggleSidebar} buyerName={buyerName} onLogout={handleLogout} />
+      <Sidebar
+        isOpen={sidebarOpen}
+        onToggle={toggleSidebar}
+        buyerName={vetName}
+        onLogout={handleLogout}
+        links={[
+          { to: '/vet_home/listservices', label: 'List Services' },
+          { to: '/vet_home/feedback', label: 'Feedback' }
+        ]}
+      />
 
       <div className={`flex-grow transition-all duration-300 ${sidebarOpen ? 'ml-72' : 'ml-0'} p-6 md:p-10`}>
         <Outlet />
@@ -45,4 +54,4 @@ function BuyerHome() {
   );
 }
 
-export default BuyerHome;
+export default VetHome;

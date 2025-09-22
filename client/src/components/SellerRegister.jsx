@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import ProgressBar from "./ProgressBar";
 
 const SellerRegister = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
@@ -93,7 +95,10 @@ const SellerRegister = () => {
         if (!res.ok) throw new Error("Failed to register");
         return res.json();
       })
-      .then(data => alert(data.message || "Seller registered successfully!"))
+      .then(data => {
+        alert(data.message || "Seller registered successfully!");
+        navigate('/', { replace: true });
+      })
       .catch(err => alert(err.message));
   };
 
