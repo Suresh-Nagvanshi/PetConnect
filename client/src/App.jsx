@@ -17,16 +17,46 @@ import SellerRegister from './components/SellerRegister.jsx';
 import VetRegister from './components/VetRegister.jsx';
 import PetStore from './components/PetStore.jsx';
 import BuyerHome from "./components/BuyerHome.jsx";
+import SellerHome from "./components/SellerHome.jsx";
+import VetHome from "./components/VetHome.jsx";
 
-function PrivateRoute({ children }) {
+// --- NEW: Import the renamed components ---
+import BuyerPetAdoption from './components/BuyerPetAdoption.jsx';
+import BuyerEditProfile from './components/BuyerEditProfile.jsx';
+import SellerListAnimals from './components/SellerListAnimals.jsx';
+import SellerListProducts from './components/SellerListProducts.jsx';
+import SellerFeedback from './components/SellerFeedback.jsx';
+import VetListServices from './components/VetListServices.jsx';
+import VetFeedback from './components/VetFeedback.jsx';
+
+
+// A simple component to check if the user is logged in.
+function PrivateRouteBuyer({ children }) {
   const buyer = localStorage.getItem('buyer');
   if (!buyer) {
+    // If not logged in, redirect them to the login page.
     return <Navigate to="/login" replace />;
   }
   return children;
 }
 
-// Wrapper component for home that redirects logged-in buyers
+function PrivateRouteSeller({ children }) {
+  const seller = localStorage.getItem('seller');
+  if (!seller) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+}
+
+function PrivateRouteVet({ children }) {
+  const vet = localStorage.getItem('vet');
+  if (!vet) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+}
+
+// A simple component to handle redirects for already logged-in users.
 function HomeRedirect() {
   const navigate = useNavigate();
 
@@ -39,21 +69,17 @@ function HomeRedirect() {
 
   return (
     <>
-      <div id="home">
-        <Home />
-      </div>
-      <div id="trending">
-        <TrendingAnimals />
-      </div>
-      <div id="services">
-        <OurServices />
-      </div>
+      <div id="home"><Home /></div>
+      <div id="trending"><TrendingAnimals /></div>
+      <div id="services"><OurServices /></div>
     </>
   );
 }
 
+// This component handles showing/hiding the header based on the current page.
 function AppContent() {
   const location = useLocation();
+  // We don't want to show the main public header on dashboard pages.
   const hideHeaderRoutes = ['/buyer_home', '/seller_home', '/vet_home'];
 
   const shouldHideHeader = hideHeaderRoutes.some((path) =>
@@ -68,26 +94,61 @@ function AppContent() {
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/feedback" element={<Feedback />} />
-
         <Route path="/register" element={<Register />} />
-
         <Route path="/register/buyer" element={<BuyerRegister />} />
         <Route path="/register/seller" element={<SellerRegister />} />
         <Route path="/register/veterinarian" element={<VetRegister />} />
-
         <Route path="/login" element={<Login />} />
-
-        {/* Protect BuyerHome route */}
-        <Route
-          path="/buyer_home/*"
-          element={
-            <PrivateRoute>
-              <BuyerHome />
-            </PrivateRoute>
-          }
-        />
-
         <Route path="/petstore" element={<PetStore />} />
+
+        {/* --- UPDATED: Nested Routes for the Buyer Dashboard --- */}
+        {/* This is the simple logic: The main BuyerHome route is protected.
+            The child routes below will render inside BuyerHome's <Outlet />.
+        */}
+        <Route
+          path="/buyer_home"
+          element={
+            <PrivateRouteBuyer>
+              <BuyerHome />
+            </PrivateRouteBuyer>
+          }
+        >
+          {/* 'index' means this is the default page for /buyer_home */}
+          <Route index element={<BuyerPetAdoption />} />
+          <Route path="petadoption" element={<BuyerPetAdoption />} />
+          <Route path="editprofile" element={<BuyerEditProfile />} />
+          <Route path="feedback" element={<Feedback />} />
+        </Route>
+
+        {/* Seller Dashboard */}
+        <Route
+          path="/seller_home"
+          element={
+            <PrivateRouteSeller>
+              <SellerHome />
+            </PrivateRouteSeller>
+          }
+        >
+          <Route index element={<SellerListAnimals />} />
+          <Route path="listanimals" element={<SellerListAnimals />} />
+          <Route path="listproducts" element={<SellerListProducts />} />
+          <Route path="feedback" element={<SellerFeedback />} />
+        </Route>
+
+        {/* Vet Dashboard */}
+        <Route
+          path="/vet_home"
+          element={
+            <PrivateRouteVet>
+              <VetHome />
+            </PrivateRouteVet>
+          }
+        >
+          <Route index element={<VetListServices />} />
+          <Route path="listservices" element={<VetListServices />} />
+          <Route path="feedback" element={<VetFeedback />} />
+        </Route>
+
       </Routes>
       <Footer />
     </>
@@ -101,3 +162,4 @@ function App() {
 }
 
 export default App;
+
