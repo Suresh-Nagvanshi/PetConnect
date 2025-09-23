@@ -25,9 +25,11 @@ import BuyerPetAdoption from './components/BuyerPetAdoption.jsx';
 import BuyerEditProfile from './components/BuyerEditProfile.jsx';
 import SellerListAnimals from './components/SellerListAnimals.jsx';
 import SellerListProducts from './components/SellerListProducts.jsx';
-import SellerFeedback from './components/SellerFeedback.jsx';
 import VetListServices from './components/VetListServices.jsx';
-import VetFeedback from './components/VetFeedback.jsx';
+import ShowFeedback from './components/ShowFeedback.jsx';
+import BuyerFeedbackForm from './components/BuyerFeedbackForm.jsx';
+import SellerFeedbackForm from './components/SellerFeedbackForm.jsx';
+import VetFeedbackForm from './components/VetFeedbackForm.jsx';
 
 
 // A simple component to check if the user is logged in.
@@ -93,7 +95,7 @@ function AppContent() {
         <Route path="/" element={<HomeRedirect />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/feedback" element={<Feedback />} />
+        <Route path="/feedback" element={<ShowFeedback />} />
         <Route path="/register" element={<Register />} />
         <Route path="/register/buyer" element={<BuyerRegister />} />
         <Route path="/register/seller" element={<SellerRegister />} />
@@ -117,7 +119,7 @@ function AppContent() {
           <Route index element={<BuyerPetAdoption />} />
           <Route path="petadoption" element={<BuyerPetAdoption />} />
           <Route path="editprofile" element={<BuyerEditProfile />} />
-          <Route path="feedback" element={<Feedback />} />
+          <Route path="feedback" element={<BuyerFeedbackForm />} />
         </Route>
 
         {/* Seller Dashboard */}
@@ -132,7 +134,7 @@ function AppContent() {
           <Route index element={<SellerListAnimals />} />
           <Route path="listanimals" element={<SellerListAnimals />} />
           <Route path="listproducts" element={<SellerListProducts />} />
-          <Route path="feedback" element={<SellerFeedback />} />
+          <Route path="feedback" element={<SellerFeedbackForm />} />
         </Route>
 
         {/* Vet Dashboard */}
@@ -146,7 +148,7 @@ function AppContent() {
         >
           <Route index element={<VetListServices />} />
           <Route path="listservices" element={<VetListServices />} />
-          <Route path="feedback" element={<VetFeedback />} />
+          <Route path="feedback" element={<VetFeedbackForm />} />
         </Route>
 
       </Routes>
