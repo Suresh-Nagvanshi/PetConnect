@@ -17,16 +17,11 @@ const SellerRegister = () => {
     pincode: "",
     district: "",
     state: "",
-    animalType: "",
-    breed: "",
-    petName: "",
-    petAge: "",
   });
 
   const steps = [
     { name: "Personal Info" },
     { name: "Address" },
-    { name: "Pet Details" },
     { name: "Confirm" }
   ];
 
@@ -49,17 +44,6 @@ const SellerRegister = () => {
       else if (!/^\d{5,6}$/.test(formData.pincode)) errors.pincode = "Pincode is invalid";
       if (!formData.district.trim()) errors.district = "District is required";
       if (!formData.state.trim()) errors.state = "State is required";
-    }
-    if (currentStep === 2) {
-      if (!formData.petName.trim()) errors.petName = "Pet name is required";
-      if (!formData.petAge.trim()) errors.petAge = "Pet age is required";
-      if (!formData.animalType.trim()) errors.animalType = "Animal type is required";
-      if (
-        ["dog", "cat"].includes(formData.animalType.toLowerCase()) &&
-        !formData.breed.trim()
-      ) {
-        errors.breed = "Breed is required for dogs and cats";
-      }
     }
     setErrors(errors);
     return Object.keys(errors).length === 0;
@@ -299,91 +283,13 @@ const SellerRegister = () => {
             {currentStep === 2 && (
               <section className="animate-fade-in space-y-4">
                 <h3 className="text-xl mb-4" style={{ fontWeight: 'normal', textAlign: 'left' }}>
-                  Step 3: Pet Details
-                </h3>
-                <div>
-                  <label htmlFor="petName" className="block text-sm text-gray-700 mb-1" style={{ fontWeight: 'normal', textAlign: 'left' }}>
-                    Pet Name
-                  </label>
-                  <input
-                    type="text"
-                    id="petName"
-                    value={formData.petName}
-                    onChange={handleInputChange}
-                    className="input"
-                    placeholder="Buddy"
-                  />
-                  {errors.petName && (
-                    <p className="text-red-600 text-sm">{errors.petName}</p>
-                  )}
-                </div>
-                <div>
-                  <label htmlFor="petAge" className="block text-sm text-gray-700 mb-1" style={{ fontWeight: 'normal', textAlign: 'left' }}>
-                    Pet Age
-                  </label>
-                  <input
-                    type="text"
-                    id="petAge"
-                    value={formData.petAge}
-                    onChange={handleInputChange}
-                    className="input"
-                    placeholder="2 years"
-                  />
-                  {errors.petAge && (
-                    <p className="text-red-600 text-sm">{errors.petAge}</p>
-                  )}
-                </div>
-                <div>
-                  <label htmlFor="animalType" className="block text-sm text-gray-700 mb-1" style={{ fontWeight: 'normal', textAlign: 'left' }}>
-                    Animal Type
-                  </label>
-                  <input
-                    type="text"
-                    id="animalType"
-                    value={formData.animalType}
-                    onChange={handleInputChange}
-                    className="input"
-                    placeholder="Dog, Cat, Rabbit"
-                  />
-                  {errors.animalType && (
-                    <p className="text-red-600 text-sm">{errors.animalType}</p>
-                  )}
-                </div>
-                {["dog", "cat"].includes(formData.animalType.toLowerCase()) && (
-                  <div>
-                    <label htmlFor="breed" className="block text-sm text-gray-700 mb-1" style={{ fontWeight: 'normal', textAlign: 'left' }}>
-                      Breed
-                    </label>
-                    <input
-                      type="text"
-                      id="breed"
-                      value={formData.breed}
-                      onChange={handleInputChange}
-                      className="input"
-                      placeholder="Golden Retriever"
-                    />
-                    {errors.breed && (
-                      <p className="text-red-600 text-sm">{errors.breed}</p>
-                    )}
-                  </div>
-                )}
-              </section>
-            )}
-
-            {currentStep === 3 && (
-              <section className="animate-fade-in space-y-4">
-                <h3 className="text-xl mb-4" style={{ fontWeight: 'normal', textAlign: 'left' }}>
-                  Step 4: Please Confirm All Details
+                  Step 3: Please Confirm All Details
                 </h3>
                 <div className="bg-gray-100 p-4 rounded space-y-2">
                   <div><strong>Name:</strong> {formData.firstName} {formData.lastName}</div>
                   <div><strong>Email:</strong> {formData.email}</div>
                   <div><strong>Phone:</strong> {formData.phone}</div>
                   <div><strong>Address:</strong> {formData.houseNo}, {formData.city}, {formData.district}, {formData.state} - {formData.pincode}</div>
-                  <div><strong>Pet Name:</strong> {formData.petName}</div>
-                  <div><strong>Pet Age:</strong> {formData.petAge}</div>
-                  <div><strong>Animal Type:</strong> {formData.animalType}</div>
-                  {formData.breed && <div><strong>Breed:</strong> {formData.breed}</div>}
                 </div>
               </section>
             )}
