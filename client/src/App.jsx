@@ -2,6 +2,7 @@ import './styles/index.css';
 import './styles/App.css';
 import { Routes, Route, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import 'leaflet/dist/leaflet.css';
 import Header from './components/Header.jsx';
 import Home from './components/Home.jsx';
 import TrendingAnimals from './components/TrendingAnimals.jsx';
@@ -19,6 +20,7 @@ import PetStore from './components/PetStore.jsx';
 import BuyerHome from "./components/BuyerHome.jsx";
 import SellerHome from "./components/SellerHome.jsx";
 import VetHome from "./components/VetHome.jsx";
+import MapView from './components/MapView.jsx';
 
 // --- NEW: Import the renamed components ---
 import BuyerPetAdoption from './components/BuyerPetAdoption.jsx';
@@ -30,7 +32,6 @@ import ShowFeedback from './components/ShowFeedback.jsx';
 import BuyerFeedbackForm from './components/BuyerFeedbackForm.jsx';
 import SellerFeedbackForm from './components/SellerFeedbackForm.jsx';
 import VetFeedbackForm from './components/VetFeedbackForm.jsx';
-
 
 // A simple component to check if the user is logged in.
 function PrivateRouteBuyer({ children }) {
@@ -102,11 +103,11 @@ function AppContent() {
         <Route path="/register/veterinarian" element={<VetRegister />} />
         <Route path="/login" element={<Login />} />
         <Route path="/petstore" element={<PetStore />} />
+        
+        {/* Added Map route */}
+        <Route path="/map" element={<MapView />} />
 
         {/* --- UPDATED: Nested Routes for the Buyer Dashboard --- */}
-        {/* This is the simple logic: The main BuyerHome route is protected.
-            The child routes below will render inside BuyerHome's <Outlet />.
-        */}
         <Route
           path="/buyer_home"
           element={
@@ -115,7 +116,6 @@ function AppContent() {
             </PrivateRouteBuyer>
           }
         >
-          {/* 'index' means this is the default page for /buyer_home */}
           <Route index element={<BuyerPetAdoption />} />
           <Route path="petadoption" element={<BuyerPetAdoption />} />
           <Route path="editprofile" element={<BuyerEditProfile />} />
@@ -164,4 +164,3 @@ function App() {
 }
 
 export default App;
-
