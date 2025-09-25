@@ -100,15 +100,15 @@ function ShowFeedback() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 px-4 py-6 sm:px-6 lg:px-8">
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-18 py-18">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Received Feedbacks</h1>
               <p className="text-gray-600 mt-1">View feedbacks given by our users</p>
             </div>
-            <div className="flex items-center space-x-8">
+            <div className="flex items-center space-x-6 sm:space-x-8">
               <div className="text-center">
                 <p className="text-2xl font-bold text-blue-600">{averageRating}</p>
                 <p className="text-sm text-gray-500">Average Rating</p>
@@ -122,7 +122,7 @@ function ShowFeedback() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
             <div className="flex items-center">
@@ -169,10 +169,10 @@ function ShowFeedback() {
 
         {/* Filter Section */}
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 mb-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <h2 className="text-lg font-semibold text-gray-900">Filter Reviews</h2>
             
-            <div className="flex space-x-2">
+            <div className="flex flex-wrap gap-2">
               {['all', '5', '4', '3', '2', '1'].map((rating) => (
                 <button
                   key={rating}
@@ -207,15 +207,15 @@ function ShowFeedback() {
             filteredFeedbacks.map((feedback) => (
               <div key={feedback._id || feedback.id} className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-md transition-shadow">
                 <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3 min-w-0">
                     <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                       <span className="text-blue-600 font-semibold text-sm">
                         {feedback.name?.charAt(0).toUpperCase()}
                       </span>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">{feedback.name}</h3>
-                      <p className="text-sm text-gray-500">{feedback.email}</p>
+                    <div className="min-w-0">
+                      <h3 className="font-semibold text-gray-900 truncate">{feedback.name}</h3>
+                      <p className="text-sm text-gray-500 truncate">{feedback.email}</p>
                     </div>
                   </div>
                     <div className="text-right">
