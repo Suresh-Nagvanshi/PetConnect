@@ -52,7 +52,7 @@ function Login() {
         const role = data.role || activeRole; // fallback to selected role
         const userObj = {
           firstName: data.firstName || 'User',
-          userId: data.userId,
+           _id: data.userId,
           email: email,
           role
         };

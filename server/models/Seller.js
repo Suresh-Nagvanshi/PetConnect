@@ -11,10 +11,8 @@ const sellerSchema = new mongoose.Schema({
   pincode: String,
   district: String,
   state: String,
-  animalType: { type: String, required: true },
-  breed: String,
-  petName: { type: String, required: true },
-  petAge: { type: String, required: true },
+  latitude: Number,      
+  longitude: Number,
 }, { timestamps: true });
 
 module.exports = mongoose.model('Seller', sellerSchema);

@@ -18,6 +18,10 @@ const buyersRouter = require('./routes/buyers');
 const sellersRouter = require('./routes/sellers');
 const vetsRouter = require('./routes/vets');
 const authRoutes = require('./routes/auth');
+const geocodeRouter = require('./routes/geocode');
+const petRoutes = require('./routes/pets');
+const path = require('path');
+
 
 // Use routers for their endpoints
 app.use('/api/products', productsRouter);
@@ -26,6 +30,9 @@ app.use('/api/buyers', buyersRouter);
 app.use('/api/sellers', sellersRouter);
 app.use('/api/vets', vetsRouter);
 app.use('/api/auth', authRoutes);
+app.use('/api/geocode', geocodeRouter);
+app.use('/api/pets', petRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Feedback routes (POST + GET)
 app.post('/api/feedbacks', async (req, res) => {
@@ -61,7 +68,16 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/petconnec
   useUnifiedTopology: true,
 })
 .then(() => console.log("Connected to MongoDB"))
-.catch((err) => console.error("MongoDB connection error:", err));
+.catch((err) => {
+  console.error("MongoDB connection error:", err);
+  // Don't exit the process, but log the error
+});
+
+// Add error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Internal server error' });
+});
 
 // Start server
 const PORT = process.env.PORT || 5000;

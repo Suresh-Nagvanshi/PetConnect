@@ -1,93 +1,140 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 
-// --- Reusable Pet Card Component ---
-// This makes our code clean and modular. Its only job is to display one pet.
-const PetCard = ({ pet }) => (
-  <div className="bg-white rounded-2xl shadow-lg overflow-hidden group transform hover:-translate-y-2 transition-transform duration-300">
-    <img
-      src={pet.imageUrl || 'https://placehold.co/600x400/e2e8f0/4a5568?text=No+Image'}
-      alt={pet.name}
-      className="w-full h-56 object-cover"
-    />
-    <div className="p-5">
-      <div className="flex justify-between items-start">
-        <h3 className="text-xl font-bold text-gray-800 truncate">{pet.name}</h3>
-        <p className="bg-blue-100 text-blue-800 font-semibold px-3 py-1 rounded-full text-xs">{pet.age}</p>
+// Pet Card component
+const PetCard = ({ pet }) => {
+  const locationUrl = pet.seller?.latitude && pet.seller?.longitude
+    ? `https://www.openstreetmap.org/?mlat=${pet.seller.latitude}&mlon=${pet.seller.longitude}#map=15/${pet.seller.latitude}/${pet.seller.longitude}`
+    : null;
+
+  return (
+    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+      <img
+        src={
+          pet.imageUrls && pet.imageUrls.length > 0
+            ? `/uploads/${pet.imageUrls[0]}`
+            : "https://placehold.co/600x400?text=No+Image"
+        }
+        alt={pet.petName}
+        className="w-full h-48 object-cover"
+      />
+      <div className="p-4">
+        <h3 className="text-xl font-bold truncate">{pet.petName}</h3>
+        <p className="text-gray-600">{pet.animalType}</p>
+        <p className="mt-2 text-gray-700">{pet.shortDescription}</p>
+        {locationUrl && (
+          <a
+            href={locationUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:underline mt-3 inline-block"
+          >
+            View Location
+          </a>
+        )}
       </div>
-      <p className="text-sm text-gray-600 mb-4">{pet.breed}</p>
-      <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-300 group-hover:bg-purple-600">
-        Learn More
-      </button>
     </div>
-  </div>
-);
+  );
+};
 
-// --- Main PetAdoption Component ---
 function PetAdoption() {
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // The simple logic to fetch pet data from your server when the page loads.
   useEffect(() => {
-    fetch('/api/pets') // Assuming you have an endpoint for pets
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch pets');
+    fetch("/api/pets")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch pets");
         return res.json();
       })
-      .then(data => {
+      .then((data) => {
         setPets(data);
         setLoading(false);
       })
-      .catch(err => {
-        console.error("Error fetching pets:", err);
+      .catch(() => {
         setError("Could not load pets at this time.");
         setLoading(false);
       });
   }, []);
 
-  // This simple logic filters the pets based on what the user types in the search bar.
-  // It checks the name, breed, and type of the animal.
-  const filteredPets = pets.filter(pet =>
-    pet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    pet.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    pet.type.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPets = pets.filter(
+    (pet) =>
+      (pet.petName?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+      (pet.animalType?.toLowerCase() || "").includes(searchTerm.toLowerCase())
   );
 
-  if (loading) return <div className="text-center p-10 font-semibold">Loading pets...</div>;
-  if (error) return <div className="text-center p-10 text-red-600 font-semibold">{error}</div>;
+  if (loading) return <div className="p-10 text-center">Loading pets...</div>;
+  if (error) return <div className="p-10 text-center text-red-600">{error}</div>;
 
   return (
-    <div className="p-4 sm:p-6">
-      <div className="mb-8">
-        <h1 className="text-4xl font-extrabold text-gray-800 mb-2">Find Your New Best Friend</h1>
-        <p className="text-gray-600">Browse our available pets ready for a loving home.</p>
-      </div>
-      
-      {/* Search Bar */}
-      <div className="mb-8">
-        <input
-          type="text"
-          placeholder="Search by name, breed, or type (e.g., Dog)..."
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          className="w-full max-w-lg px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition"
-        />
+    <div className="max-w-7xl mx-auto p-6">
+      <h1 className="text-4xl font-extrabold text-center mb-10 text-gray-800">
+        Find Your New Best Friend
+      </h1>
+
+      <input
+        type="text"
+        placeholder="Search by name or animal type"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="block mx-auto mb-10 px-4 py-3 border rounded-md w-full max-w-xl focus:ring-2 focus:ring-blue-500"
+      />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-12">
+        {filteredPets.length > 0 ? (
+          filteredPets.map((pet) => <PetCard key={pet._id} pet={pet} />)
+        ) : (
+          <p className="col-span-full text-center text-gray-500">
+            No pets found matching your criteria.
+          </p>
+        )}
       </div>
 
-      {/* Grid of Pets */}
-      {filteredPets.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {filteredPets.map(pet => (
-            <PetCard key={pet._id} pet={pet} />
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-10">
-          <p className="text-lg text-gray-500">No pets match your search. Try another term!</p>
-        </div>
-      )}
+      <h2 className="text-2xl font-semibold text-center mb-6 text-gray-800">
+        See All Pets on the Map
+      </h2>
+
+      <MapContainer
+        center={[20, 77]}
+        zoom={5}
+        style={{ height: "500px", width: "100%" }}
+        className="rounded-lg shadow"
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        {filteredPets.map(
+          (pet) =>
+            pet.seller?.latitude &&
+            pet.seller?.longitude && (
+              <Marker
+                key={pet._id}
+                position={[pet.seller.latitude, pet.seller.longitude]}
+              >
+                <Popup>
+                  <strong>{pet.petName}</strong>
+                  <br />
+                  {pet.animalType}
+                  <br />
+                  Location: {pet.seller.city}, {pet.seller.state}
+                  <br />
+                  <a
+                    href={`https://www.openstreetmap.org/?mlat=${pet.seller.latitude}&mlon=${pet.seller.longitude}#map=15/${pet.seller.latitude}/${pet.seller.longitude}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    View Location
+                  </a>
+                </Popup>
+              </Marker>
+            )
+        )}
+      </MapContainer>
     </div>
   );
 }
