@@ -5,7 +5,7 @@ function ShowFeedback() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState('all');
-  const [setUserType] = useState('');
+  const [userType, setUserType] = useState('');
 
   // Get user type from localStorage
   useEffect(() => {
@@ -22,7 +22,7 @@ function ShowFeedback() {
     const fetchFeedbacks = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:5000/api/feedbacks');
+        const response = await fetch('/api/feedbacks');
         if (!response.ok) throw new Error('Failed to fetch feedbacks');
         const data = await response.json();
         setFeedbacks(data);
@@ -218,23 +218,17 @@ function ShowFeedback() {
                       <p className="text-sm text-gray-500">{feedback.email}</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <StarRating rating={feedback.rating} />
-                      <span className="text-sm font-medium text-gray-700">
-                        {feedback.rating}/5
-                      </span>
+                    <div className="text-right">
+                      <div className="flex items-center space-x-2">
+                        <StarRating rating={feedback.rating} />
+                        <span className="text-sm font-medium text-gray-700">
+                          {feedback.rating}/5
+                        </span>
+                      </div>
                     </div>
-                    <p className="text-sm text-gray-500">
-                      {new Date(feedback.date).toLocaleDateString()}
-                    </p>
-                  </div>
                 </div>
-                <div className="flex items-start justify-between">
-                  <p className="text-gray-700 flex-1 pr-4">{feedback.feedback}</p>
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getTypeBadgeColor(feedback.type)}`}>
-                    {feedback.type?.charAt(0).toUpperCase() + feedback.type?.slice(1)}
-                  </span>
+                <div className="mt-4">
+                  <p className="text-gray-700">{feedback.feedback}</p>
                 </div>
               </div>
             ))
