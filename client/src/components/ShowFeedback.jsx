@@ -4,101 +4,42 @@ function ShowFeedback() {
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filter, setFilter] = useState('all'); // all, 5-star, 4-star, etc.
-  const [userType, setUserType] = useState('');
+  const [filter, setFilter] = useState('all');
+  const [setUserType] = useState('');
 
   // Get user type from localStorage
   useEffect(() => {
     const buyer = localStorage.getItem('buyer');
     const seller = localStorage.getItem('seller');
     const vet = localStorage.getItem('vet');
-    
     if (buyer) setUserType('Buyer');
     else if (seller) setUserType('Seller');
     else if (vet) setUserType('Veterinarian');
   }, []);
 
-  // Fetch feedbacks from API
+  // Fetch feedbacks from your API
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
         setLoading(true);
-        // Mock data for now - replace with actual API call
-        const mockFeedbacks = [
-          {
-            id: 1,
-            name: 'Sarah Johnson',
-            email: 'sarah.j@email.com',
-            rating: 5,
-            feedback: 'Amazing service! The adoption process was smooth and the staff was incredibly helpful. Our new pet is perfect!',
-            date: '2024-01-15',
-            type: 'adoption'
-          },
-          {
-            id: 2,
-            name: 'Michael Chen',
-            email: 'm.chen@email.com',
-            rating: 4,
-            feedback: 'Great experience overall. The pet was healthy and well-cared for. Would recommend to others.',
-            date: '2024-01-12',
-            type: 'adoption'
-          },
-          {
-            id: 3,
-            name: 'Emily Rodriguez',
-            email: 'emily.r@email.com',
-            rating: 5,
-            feedback: 'Excellent veterinary services. Dr. Smith was knowledgeable and caring. My pet is much better now.',
-            date: '2024-01-10',
-            type: 'veterinary'
-          },
-          {
-            id: 4,
-            name: 'David Kim',
-            email: 'david.k@email.com',
-            rating: 3,
-            feedback: 'Good service but the wait time was longer than expected. The quality of care was satisfactory.',
-            date: '2024-01-08',
-            type: 'veterinary'
-          },
-          {
-            id: 5,
-            name: 'Lisa Thompson',
-            email: 'lisa.t@email.com',
-            rating: 5,
-            feedback: 'Outstanding pet supplies! High quality products and fast delivery. Will definitely order again.',
-            date: '2024-01-05',
-            type: 'products'
-          },
-          {
-            id: 6,
-            name: 'James Wilson',
-            email: 'james.w@email.com',
-            rating: 4,
-            feedback: 'Very helpful staff and good selection of animals. The adoption fee was reasonable.',
-            date: '2024-01-03',
-            type: 'adoption'
-          }
-        ];
-
-        // Simulate API delay
-        setTimeout(() => {
-          setFeedbacks(mockFeedbacks);
-          setLoading(false);
-        }, 1000);
+        const response = await fetch('http://localhost:5000/api/feedbacks');
+        if (!response.ok) throw new Error('Failed to fetch feedbacks');
+        const data = await response.json();
+        setFeedbacks(data);
+        setLoading(false);
       } catch (err) {
+        console.log(err);
         setError('Failed to load feedbacks');
         setLoading(false);
       }
     };
-
     fetchFeedbacks();
   }, []);
 
   // Filter feedbacks based on rating
   const filteredFeedbacks = feedbacks.filter(feedback => {
     if (filter === 'all') return true;
-    return feedback.rating.toString() === filter;
+    return feedback.rating?.toString() === filter;
   });
 
   // Calculate statistics
@@ -110,25 +51,23 @@ function ShowFeedback() {
   const fourStarCount = feedbacks.filter(f => f.rating === 4).length;
 
   // Star rating component
-  const StarRating = ({ rating }) => {
-    return (
-      <div className="flex space-x-1">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <svg
-            key={star}
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill={star <= rating ? '#FFD700' : '#E5E7EB'}
-            className="w-4 h-4"
-          >
-            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.234 3.793a1 1 0 00.95.69h3.993c.969 0 1.371 1.24.588 1.81l-3.232 2.345a1 1 0 00-.364 1.118l1.234 3.793c.3.922-.755 1.688-1.54 1.118l-3.232-2.345a1 1 0 00-1.175 0l-3.232 2.345c-.784.57-1.838-.196-1.539-1.118l1.233-3.793a1 1 0 00-.364-1.118L2.275 9.22c-.783-.57-.38-1.81.588-1.81h3.993a1 1 0 00.95-.69l1.234-3.793z" />
-          </svg>
-        ))}
-      </div>
-    );
-  };
+  const StarRating = ({ rating }) => (
+    <div className="flex space-x-1">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <svg
+          key={star}
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill={star <= rating ? '#FFD700' : '#E5E7EB'}
+          className="w-4 h-4"
+        >
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.234 3.793a1 1 0 00.95.69h3.993c.969 0 1.371 1.24.588 1.81l-3.232 2.345a1 1 0 00-.364 1.118l1.234 3.793c.3.922-.755 1.688-1.54 1.118l-3.232-2.345a1 1 0 00-1.175 0l-3.232 2.345c-.784.57-1.838-.196-1.539-1.118l1.233-3.793a1 1 0 00-.364-1.118L2.275 9.22c-.783-.57-.38-1.81.588-1.81h3.993a1 1 0 00.95-.69l1.234-3.793z" />
+        </svg>
+      ))}
+    </div>
+  );
 
-  // Get type badge color
+  // Badge color for feedback type
   const getTypeBadgeColor = (type) => {
     switch (type) {
       case 'adoption': return 'bg-green-100 text-green-800';
@@ -161,11 +100,7 @@ function ShowFeedback() {
   }
 
   return (
-    // CHANGE PADDING HERE:
-    // "p-8" adds padding around the entire component. You can change the number
-    // to adjust the spacing, for example, "p-4", "p-6", "p-12", etc.
     <div className="min-h-screen bg-gray-50 p-8">
-      {/* Header */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-18 py-18">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
@@ -188,7 +123,6 @@ function ShowFeedback() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-6">
-        {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
             <div className="flex items-center">
@@ -270,12 +204,12 @@ function ShowFeedback() {
             </div>
           ) : (
             filteredFeedbacks.map((feedback) => (
-              <div key={feedback.id} className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-md transition-shadow">
+              <div key={feedback._id || feedback.id} className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-md transition-shadow">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                       <span className="text-blue-600 font-semibold text-sm">
-                        {feedback.name.charAt(0).toUpperCase()}
+                        {feedback.name?.charAt(0).toUpperCase()}
                       </span>
                     </div>
                     <div>
@@ -295,11 +229,10 @@ function ShowFeedback() {
                     </p>
                   </div>
                 </div>
-                
                 <div className="flex items-start justify-between">
                   <p className="text-gray-700 flex-1 pr-4">{feedback.feedback}</p>
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${getTypeBadgeColor(feedback.type)}`}>
-                    {feedback.type.charAt(0).toUpperCase() + feedback.type.slice(1)}
+                    {feedback.type?.charAt(0).toUpperCase() + feedback.type?.slice(1)}
                   </span>
                 </div>
               </div>

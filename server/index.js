@@ -7,51 +7,28 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Import your models (assumed defined in separate model files)
+// Import your models
 const Pet = require('./models/Pet');
 const Feedback = require('./models/Feedback');
-const contactRoutes = require('./routes/contact'); // Import contact route
 
-// Import petstore router
+// Import routers
+const contactRoutes = require('./routes/contact');
 const productsRouter = require('./routes/products');
-
-// Use your petstore router for /api/pets endpoints
-app.use('/api/products', productsRouter);
-
-// Use contact route for /api/contact
-app.use('/api/contact', contactRoutes);
-
-// Import buyers router for handling buyer registrations
 const buyersRouter = require('./routes/buyers');
-// Use buyers router for /api/buyers endpoints
-app.use('/api/buyers', buyersRouter);
-
-// Import sellers router for handling seller registrations
 const sellersRouter = require('./routes/sellers');
-// Use sellers router for /api/sellers endpoints
-app.use('/api/sellers', sellersRouter);
-
-// Import vets router for handling vet registrations
 const vetsRouter = require('./routes/vets');
-// Use vets router for /api/vets endpoints
-app.use('/api/vets', vetsRouter);
-
-
-// Import auth routes for handling login
 const authRoutes = require('./routes/auth');
-// Use auth routes for /api/auth endpoints
+
+// Use routers for their endpoints
+app.use('/api/products', productsRouter);
+app.use('/api/contact', contactRoutes);
+app.use('/api/buyers', buyersRouter);
+app.use('/api/sellers', sellersRouter);
+app.use('/api/vets', vetsRouter);
 app.use('/api/auth', authRoutes);
 
-
-
-// Root route - test server
-app.get('/', (req, res) => {
-  res.send('PetConnect backend is running!');
-});
-
-// Feedback POST route
-app.post('/feedback', async (req, res) => {
-  console.log("Request body:", req.body);
+// Feedback routes (POST + GET)
+app.post('/api/feedbacks', async (req, res) => {
   try {
     const feedback = new Feedback(req.body);
     await feedback.save();
@@ -60,6 +37,22 @@ app.post('/feedback', async (req, res) => {
     console.error(error);
     res.status(500).json({ error: error.message });
   }
+});
+
+// GET route to fetch all feedbacks
+app.get('/api/feedbacks', async (req, res) => {
+  try {
+    const feedbacks = await Feedback.find({});
+    res.json(feedbacks);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Root route - test server
+app.get('/', (req, res) => {
+  res.send('PetConnect backend is running!');
 });
 
 // Connect to MongoDB
