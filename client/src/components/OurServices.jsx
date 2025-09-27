@@ -19,7 +19,7 @@ function OurServices() {
           {/* Card 1 */}
           <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transform transition duration-300 p-8 text-center">
             <img
-              src="https://cdn-icons-png.flaticon.com/512/616/616408.png"
+              src="public/petadoption.png"
               alt="Adoption"
               className="w-20 mx-auto mb-4"
             />
@@ -32,7 +32,7 @@ function OurServices() {
           {/* Card 2 */}
           <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transform transition duration-300 p-8 text-center">
             <img
-              src="https://cdn-icons-png.flaticon.com/512/616/616408.png"
+              src="public/vet.png"
               alt="Healthcare"
               className="w-20 mx-auto mb-4"
             />
@@ -45,7 +45,7 @@ function OurServices() {
           {/* Card 3 */}
           <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transform transition duration-300 p-8 text-center">
             <img
-              src="https://cdn-icons-png.flaticon.com/512/616/616408.png"
+              src="public/petstore.png"
               alt="Pet Store"
               className="w-20 mx-auto mb-4"
             />
@@ -58,7 +58,7 @@ function OurServices() {
           {/* Card 4 */}
           <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transform transition duration-300 p-8 text-center">
             <img
-              src="https://cdn-icons-png.flaticon.com/512/616/616408.png"
+              src="public/ai.png"
               alt="SmartCare AI"
               className="w-20 mx-auto mb-4"
             />

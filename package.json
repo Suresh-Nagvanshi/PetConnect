@@ -11,6 +11,7 @@
   "description": "",
   "dependencies": {
     "leaflet": "^1.9.4",
+    "leaflet-defaulticon-compatibility": "^0.1.2",
     "react-hook-form": "^7.62.0",
     "react-leaflet": "^5.0.0",
     "swiper": "^11.2.10"
