@@ -244,9 +244,9 @@ function AboutUs() {
                   />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Abhinav G</h3>
-                <p className="text-blue-200">Frontend Developer</p>
+                <p className="text-blue-200">Database Administrator</p>
                 <p className="text-gray-300 text-sm mt-2">
-                  Dedicated to building a user-friendly and responsive frontend.
+                  Dedicated to maintaining the integrity and performance of our data systems.
                 </p>
               </div>
             </div>
