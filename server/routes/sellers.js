@@ -3,6 +3,16 @@ const router = express.Router();
 const Seller = require("../models/Seller");
 const bcrypt = require("bcrypt");
 
+router.get('/', async (req, res) => {
+  try {
+    const sellers = await Seller.find();
+    res.json(sellers);
+  } catch (error) {
+    console.error('Error fetching sellers:', error);
+    res.status(500).json({ error: 'Failed to fetch sellers' });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     console.log("Received seller registration request:", req.body);

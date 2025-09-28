@@ -4,16 +4,17 @@ import "leaflet/dist/leaflet.css";
 
 // Pet Card component
 const PetCard = ({ pet }) => {
-  const locationUrl = pet.seller?.latitude && pet.seller?.longitude
-    ? `https://www.openstreetmap.org/?mlat=${pet.seller.latitude}&mlon=${pet.seller.longitude}#map=15/${pet.seller.latitude}/${pet.seller.longitude}`
-    : null;
+  const locationUrl =
+    pet.seller?.latitude && pet.seller?.longitude
+      ? `https://www.openstreetmap.org/?mlat=${pet.seller.latitude}&mlon=${pet.seller.longitude}#map=15/${pet.seller.latitude}/${pet.seller.longitude}`
+      : null;
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
       <img
         src={
           pet.imageUrls && pet.imageUrls.length > 0
-            ? `/uploads/${pet.imageUrls[0]}`
+            ? `http://localhost:5000/uploads/${pet.imageUrls[0]}`
             : "https://placehold.co/600x400?text=No+Image"
         }
         alt={pet.petName}
@@ -67,7 +68,8 @@ function PetAdoption() {
   );
 
   if (loading) return <div className="p-10 text-center">Loading pets...</div>;
-  if (error) return <div className="p-10 text-center text-red-600">{error}</div>;
+  if (error)
+    return <div className="p-10 text-center text-red-600">{error}</div>;
 
   return (
     <div className="max-w-7xl mx-auto p-6">

@@ -3,6 +3,7 @@ import './styles/App.css';
 import { Routes, Route, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
+
 import Header from './components/Header.jsx';
 import Home from './components/Home.jsx';
 import TrendingAnimals from './components/TrendingAnimals.jsx';
@@ -17,12 +18,11 @@ import BuyerRegister from './components/BuyerRegister.jsx';
 import SellerRegister from './components/SellerRegister.jsx';
 import VetRegister from './components/VetRegister.jsx';
 import PetStore from './components/PetStore.jsx';
-import BuyerHome from "./components/BuyerHome.jsx";
-import SellerHome from "./components/SellerHome.jsx";
-import VetHome from "./components/VetHome.jsx";
+import BuyerHome from './components/BuyerHome.jsx';
+import SellerHome from './components/SellerHome.jsx';
+import VetHome from './components/VetHome.jsx';
 import MapView from './components/MapView.jsx';
 
-// --- NEW: Import the renamed components ---
 import BuyerPetAdoption from './components/BuyerPetAdoption.jsx';
 import BuyerEditProfile from './components/BuyerEditProfile.jsx';
 import SellerListAnimals from './components/SellerListAnimals.jsx';
@@ -33,11 +33,10 @@ import BuyerFeedbackForm from './components/BuyerFeedbackForm.jsx';
 import SellerFeedbackForm from './components/SellerFeedbackForm.jsx';
 import VetFeedbackForm from './components/VetFeedbackForm.jsx';
 
-// A simple component to check if the user is logged in.
+// Private route components for authentication checks
 function PrivateRouteBuyer({ children }) {
   const buyer = localStorage.getItem('buyer');
   if (!buyer) {
-    // If not logged in, redirect them to the login page.
     return <Navigate to="/login" replace />;
   }
   return children;
@@ -59,7 +58,7 @@ function PrivateRouteVet({ children }) {
   return children;
 }
 
-// A simple component to handle redirects for already logged-in users.
+// Component that redirects logged-in buyers to buyer homepage
 function HomeRedirect() {
   const navigate = useNavigate();
 
@@ -79,13 +78,13 @@ function HomeRedirect() {
   );
 }
 
-// This component handles showing/hiding the header based on the current page.
+// AppContent handles routes and header/footer visibility
 function AppContent() {
   const location = useLocation();
-  // We don't want to show the main public header on dashboard pages.
-  const hideHeaderRoutes = ['/buyer_home', '/seller_home', '/vet_home'];
 
-  const shouldHideHeader = hideHeaderRoutes.some((path) =>
+  // Routes where header should not appear
+  const hideHeaderRoutes = ['/buyer_home', '/seller_home', '/vet_home'];
+  const shouldHideHeader = hideHeaderRoutes.some(path =>
     location.pathname.startsWith(path)
   );
 
@@ -97,19 +96,20 @@ function AppContent() {
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/feedback" element={<ShowFeedback />} />
+
+        {/* Registration and Login */}
         <Route path="/register" element={<Register />} />
         <Route path="/register/buyer" element={<BuyerRegister />} />
         <Route path="/register/seller" element={<SellerRegister />} />
         <Route path="/register/veterinarian" element={<VetRegister />} />
         <Route path="/login" element={<Login />} />
+
         <Route path="/petstore" element={<PetStore />} />
-        
-        {/* Added Map route */}
         <Route path="/map" element={<MapView />} />
 
-        {/* --- UPDATED: Nested Routes for the Buyer Dashboard --- */}
+        {/* Buyer Dashboard with nested routes */}
         <Route
-          path="/buyer_home"
+          path="/buyer_home/*"
           element={
             <PrivateRouteBuyer>
               <BuyerHome />
@@ -122,9 +122,9 @@ function AppContent() {
           <Route path="feedback" element={<BuyerFeedbackForm />} />
         </Route>
 
-        {/* Seller Dashboard */}
+        {/* Seller Dashboard with nested routes */}
         <Route
-          path="/seller_home"
+          path="/seller_home/*"
           element={
             <PrivateRouteSeller>
               <SellerHome />
@@ -137,9 +137,9 @@ function AppContent() {
           <Route path="feedback" element={<SellerFeedbackForm />} />
         </Route>
 
-        {/* Vet Dashboard */}
+        {/* Vet Dashboard with nested routes */}
         <Route
-          path="/vet_home"
+          path="/vet_home/*"
           element={
             <PrivateRouteVet>
               <VetHome />
@@ -150,7 +150,6 @@ function AppContent() {
           <Route path="listservices" element={<VetListServices />} />
           <Route path="feedback" element={<VetFeedbackForm />} />
         </Route>
-
       </Routes>
       <Footer />
     </>
@@ -158,9 +157,7 @@ function AppContent() {
 }
 
 function App() {
-  return (
-    <AppContent />
-  );
+  return <AppContent />;
 }
 
 export default App;
