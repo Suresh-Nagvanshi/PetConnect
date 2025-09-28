@@ -229,12 +229,7 @@ function SellerListAnimals() {
 
         {/* Animals list on the right */}
         <div className="lg:col-span-2 space-y-6 overflow-y-auto max-h-[80vh]">
-          // Add above, below, or between existing animal cards for test
-          <img
-            src="/uploads/pets/17595051530855-714273884.jpeg"
-            alt="test"
-            style={{ width: 160, height: 160 }}
-          />
+          
           {animals.length === 0 ? (
             <div className="text-gray-500 text-center">
               No animals listed yet.
