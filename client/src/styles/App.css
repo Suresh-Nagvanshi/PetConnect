@@ -41,3 +41,38 @@
   color: #888;
 }
 
+
+
+.thought-bubble {
+  /* This centers the bubble horizontally on its calculated 'left' coordinate */
+  transform: translateX(-50%);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+/* This pseudo-element creates the triangle pointer */
+.thought-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: 100%; /* Position the triangle at the top of the bubble */
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 7px;
+  border-style: solid;
+  /* This creates the triangle shape pointing up */
+  border-color: transparent transparent #1e293b transparent; /* Corresponds to bg-slate-800 */
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) translateX(-50%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateX(-50%);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}

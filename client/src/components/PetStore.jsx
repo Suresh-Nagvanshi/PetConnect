@@ -47,7 +47,7 @@ const ProductCard = ({ product, onOpenDetails, onAddToCart, onBuyNow }) => {
               title="Add to Cart"
               onClick={(e) => {
                 e.stopPropagation();
-                onAddToCart(product);
+                onAddToCart(product, e.currentTarget); // Pass the button element
               }}
               className="h-10 w-10 grid place-items-center rounded-full bg-blue-600 hover:bg-blue-700 text-white"
             >
@@ -82,6 +82,7 @@ function PetStore() {
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [cart, setCart] = useState([]);
   const [cartModalOpen, setCartModalOpen] = useState(false);
+  const [toast, setToast] = useState({ show: false, message: '', top: 0, left: 0 });
 
   useEffect(() => {
     fetch('/api/products')
@@ -110,19 +111,35 @@ function PetStore() {
     setActiveImageIdx(0);
   };
 
-  const addToCart = (product) => {
+  const showToast = (message, targetElement) => {
+    if (!targetElement) return;
+    
+    const rect = targetElement.getBoundingClientRect();
+    // This calculation correctly finds the button's position on the page, even if scrolled
+    const top = rect.bottom + window.scrollY + 8;
+    const left = rect.left + window.scrollX + rect.width / 2;
+
+    setToast({ show: true, message, top, left });
+    
+    setTimeout(() => {
+      setToast((prev) => ({ ...prev, show: false }));
+    }, 2000); // Hide after 2 seconds
+  };
+
+  const addToCart = (product, targetElement) => {
     setCart((prev) => {
       const index = prev.findIndex(
         (item) =>
-          item.product._id === product._id || item.product.id === product.id
+          (item.product._id || item.product.id) === (product._id || product.id)
       );
       if (index !== -1) {
-        const newCart = [...prev];
-        newCart[index].quantity += 1;
-        return newCart;
+        return prev.map((item, i) =>
+          i === index ? { ...item, quantity: item.quantity + 1 } : item
+        );
       }
       return [...prev, { product, quantity: 1 }];
     });
+    showToast(`Added!`, targetElement); // Call the toast with the button element
   };
 
   const removeFromCart = (productId) => {
@@ -174,8 +191,20 @@ function PetStore() {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-12">
+      {/* Thought Bubble Notification */}
+      {toast.show && (
+        <div
+          className="absolute bg-slate-800 text-white py-2 px-4 rounded-lg shadow-lg z-50 thought-bubble animate-fade-in"
+          style={{
+            top: `${toast.top}px`,
+            left: `${toast.left}px`,
+          }}
+        >
+          {toast.message}
+        </div>
+      )}
+
       <div className="container mx-auto px-4">
-        {/* Cart button */}
         <div className="flex justify-end mb-4">
           <button
             className="relative bg-white rounded-xl shadow-lg px-4 py-2 flex items-center hover:bg-blue-50 transition-colors"
@@ -192,18 +221,12 @@ function PetStore() {
           </button>
         </div>
 
-        {/* Cart modal */}
         {cartModalOpen && (
           <div className="fixed inset-0 z-50 bg-black/50 flex justify-center items-center p-4">
             <div className="bg-white rounded-2xl shadow-lg max-w-3xl w-full max-h-[80vh] overflow-auto p-6">
-              <h2 className="text-2xl font-bold mb-4 border-b pb-2">
-                Your Cart
-              </h2>
-
+              <h2 className="text-2xl font-bold mb-4 border-b pb-2">Your Cart</h2>
               {cart.length === 0 ? (
-                <div className="text-center text-gray-600 py-6">
-                  Your cart is empty.
-                </div>
+                <div className="text-center text-gray-600 py-6">Your cart is empty.</div>
               ) : (
                 <>
                   <table className="w-full text-left border-collapse">
@@ -218,27 +241,14 @@ function PetStore() {
                     </thead>
                     <tbody>
                       {cart.map(({ product, quantity }) => (
-                        <tr
-                          key={product._id || product.id}
-                          className="border-b last:border-none"
-                        >
+                        <tr key={product._id || product.id} className="border-b last:border-none">
                           <td className="py-2 px-4">{product.name}</td>
-                          <td className="py-2 px-4">
-                            ₹{(Number(product.price) || 0).toLocaleString(
-                              'en-IN'
-                            )}
-                          </td>
+                          <td className="py-2 px-4">₹{(Number(product.price) || 0).toLocaleString('en-IN')}</td>
                           <td className="py-2 px-4">{quantity}</td>
-                          <td className="py-2 px-4">
-                            ₹{(
-                              (Number(product.price) || 0) * quantity
-                            ).toLocaleString('en-IN')}
-                          </td>
+                          <td className="py-2 px-4">₹{((Number(product.price) || 0) * quantity).toLocaleString('en-IN')}</td>
                           <td className="py-2 px-4">
                             <button
-                              onClick={() =>
-                                removeFromCart(product._id || product.id)
-                              }
+                              onClick={() => removeFromCart(product._id || product.id)}
                               className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600"
                             >
                               Delete
@@ -248,14 +258,12 @@ function PetStore() {
                       ))}
                     </tbody>
                   </table>
-
                   <div className="flex justify-between font-bold text-lg mt-4 border-t pt-4">
                     <div>Total</div>
                     <div>₹{totalPrice().toLocaleString('en-IN')}</div>
                   </div>
                 </>
               )}
-
               <div className="flex gap-4 mt-6">
                 <button
                   onClick={() => setCartModalOpen(false)}
@@ -264,10 +272,7 @@ function PetStore() {
                   Cancel
                 </button>
                 {cart.length > 0 && (
-                  <button
-                    onClick={buyAll}
-                    className="flex-1 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700"
-                  >
+                  <button onClick={buyAll} className="flex-1 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700">
                     Buy Now
                   </button>
                 )}
@@ -276,17 +281,11 @@ function PetStore() {
           </div>
         )}
 
-        {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-extrabold text-gray-800 mb-2">
-            Explore Our Pet Store
-          </h1>
-          <p className="text-lg text-gray-600">
-            Everything your furry, feathery, or scaly friend could ever want!
-          </p>
+          <h1 className="text-5xl font-extrabold text-gray-800 mb-2">Explore Our Pet Store</h1>
+          <p className="text-lg text-gray-600">Everything your furry, feathery, or scaly friend could ever want!</p>
         </div>
 
-        {/* Products grid */}
         {products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {products.map((product) => (
@@ -301,58 +300,31 @@ function PetStore() {
           </div>
         ) : (
           <div className="text-center py-10">
-            <p className="text-lg text-gray-500">
-              No products found in the store yet!
-            </p>
+            <p className="text-lg text-gray-500">No products found in the store yet!</p>
           </div>
         )}
 
-        {/* Details Modal */}
         {selected && (
           <div className="fixed inset-0 z-50">
-            <div
-              className="absolute inset-0 bg-black/60"
-              onClick={closeDetails}
-            ></div>
+            <div className="absolute inset-0 bg-black/60" onClick={closeDetails}></div>
             <div className="absolute inset-0 flex items-center justify-center p-4">
               <div className="bg-white rounded-2xl shadow-2xl w-[90vw] max-w-5xl h-[80vh] overflow-hidden">
                 <div className="grid grid-cols-1 md:grid-cols-2 h-full">
                   <div className="relative bg-gray-50 h-full">
                     {(() => {
-                      const images =
-                        selected.imageUrls && selected.imageUrls.length > 0
-                          ? selected.imageUrls
-                          : [
-                              selected.imageUrl ||
-                                'https://placehold.co/800x600/e2e8f0/4a5568?text=No+Image',
-                            ];
-                      const current =
-                        images[Math.min(activeImageIdx, images.length - 1)];
+                      const images = selected.imageUrls && selected.imageUrls.length > 0
+                        ? selected.imageUrls
+                        : [selected.imageUrl || 'https://placehold.co/800x600/e2e8f0/4a5568?text=No+Image'];
+                      const current = images[Math.min(activeImageIdx, images.length - 1)];
                       return (
                         <>
-                          <img
-                            src={current}
-                            alt={selected.name}
-                            className="w-full h-full object-contain"
-                          />
+                          <img src={current} alt={selected.name} className="w-full h-full object-contain" />
                           {images.length > 1 && (
                             <div className="absolute bottom-3 left-0 right-0 px-4">
                               <div className="bg-white/80 backdrop-blur rounded-xl p-2 grid grid-cols-5 gap-2">
                                 {images.slice(0, 5).map((url, idx) => (
-                                  <button
-                                    key={idx}
-                                    onClick={() => setActiveImageIdx(idx)}
-                                    className={`rounded overflow-hidden border ${
-                                      idx === activeImageIdx
-                                        ? 'ring-2 ring-blue-500'
-                                        : ''
-                                    }`}
-                                  >
-                                    <img
-                                      src={url}
-                                      alt={`thumb-${idx}`}
-                                      className="w-full h-16 object-cover"
-                                    />
+                                  <button key={idx} onClick={() => setActiveImageIdx(idx)} className={`rounded overflow-hidden border ${idx === activeImageIdx ? 'ring-2 ring-blue-500' : ''}`}>
+                                    <img src={url} alt={`thumb-${idx}`} className="w-full h-16 object-cover" />
                                   </button>
                                 ))}
                               </div>
@@ -365,9 +337,7 @@ function PetStore() {
                   <div className="p-6 flex flex-col h-full overflow-y-auto">
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <h3 className="text-2xl font-bold text-gray-800">
-                          {selected.name}
-                        </h3>
+                        <h3 className="text-2xl font-bold text-gray-800">{selected.name}</h3>
                         {selected.category && (
                           <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full border border-gray-200 bg-gray-50 text-gray-700 text-xs font-medium">
                             {selected.category}
@@ -375,44 +345,31 @@ function PetStore() {
                         )}
                       </div>
                       <div className="text-2xl font-extrabold text-blue-600">
-                        {new Intl.NumberFormat('en-IN', {
-                          style: 'currency',
-                          currency: 'INR',
-                          minimumFractionDigits: 0,
-                        }).format(Number(selected.price) || 0)}
+                        {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(Number(selected.price) || 0)}
                       </div>
                     </div>
                     {selected.longDescription || selected.description ? (
-                      <div className="mt-4 text-gray-700 leading-relaxed">
-                        {selected.longDescription || selected.description}
-                      </div>
+                      <div className="mt-4 text-gray-700 leading-relaxed">{selected.longDescription || selected.description}</div>
                     ) : null}
                     <div className="h-6"></div>
                     <div className="sticky bottom-0 bg-white pt-4 pb-4">
                       <div className="flex gap-3">
                         <button
-                          onClick={() => addToCart(selected)}
+                          onClick={(e) => addToCart(selected, e.currentTarget)}
                           className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2"
                         >
-                          <span role="img" aria-label="cart">
-                            🛒
-                          </span>
+                          <span role="img" aria-label="cart">🛒</span>
                           Add to Cart
                         </button>
                         <button
                           onClick={() => buyNow(selected)}
                           className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2"
                         >
-                          <span role="img" aria-label="buy">
-                            ⚡
-                          </span>
+                          <span role="img" aria-label="buy">⚡</span>
                           Buy Now
                         </button>
                       </div>
-                      <button
-                        onClick={closeDetails}
-                        className="mt-3 text-sm text-gray-500 hover:text-gray-700 w-full text-center"
-                      >
+                      <button onClick={closeDetails} className="mt-3 text-sm text-gray-500 hover:text-gray-700 w-full text-center">
                         Close
                       </button>
                     </div>
