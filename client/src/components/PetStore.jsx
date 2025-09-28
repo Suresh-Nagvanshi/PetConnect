@@ -84,6 +84,10 @@ function PetStore() {
   const [cartModalOpen, setCartModalOpen] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', top: 0, left: 0 });
 
+  // Add these new state variables
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterCategory, setFilterCategory] = useState('');
+
   useEffect(() => {
     fetch('/api/products')
       .then((res) => {
@@ -170,6 +174,12 @@ function PetStore() {
     setCart([]);
     setCartModalOpen(false);
   };
+
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = filterCategory ? product.category === filterCategory : true;
+    return matchesSearch && matchesCategory;
+  });
 
   if (loading) {
     return (
@@ -285,10 +295,29 @@ function PetStore() {
           <h1 className="text-5xl font-extrabold text-gray-800 mb-2">Explore Our Pet Store</h1>
           <p className="text-lg text-gray-600">Everything your furry, feathery, or scaly friend could ever want!</p>
         </div>
-
-        {products.length > 0 ? (
+        <div className="mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <input
+                type="text"
+                placeholder="Search for products..."
+                className="w-full sm:w-1/2 px-4 py-2 border rounded-lg"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <select
+                className="w-full sm:w-1/4 px-4 py-2 border rounded-lg"
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
+            >
+                <option value="">All Categories</option>
+                {/* You can populate these options dynamically if you want */}
+                <option value="food">Food</option>
+                <option value="toy">Toys</option>
+                <option value="accessory">Accessories</option>
+            </select>
+        </div>
+        {filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <ProductCard
                 key={product._id || product.id}
                 product={product}
@@ -300,7 +329,7 @@ function PetStore() {
           </div>
         ) : (
           <div className="text-center py-10">
-            <p className="text-lg text-gray-500">No products found in the store yet!</p>
+            <p className="text-lg text-gray-500">No products found for your search!</p>
           </div>
         )}
 
