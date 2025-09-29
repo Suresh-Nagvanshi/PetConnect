@@ -114,7 +114,7 @@ const SellerRegister = () => {
                       value={formData.firstName}
                       onChange={handleInputChange}
                       className="input"
-                      placeholder="Suresh"
+                      placeholder="First Name"
                     />
                     {errors.firstName && (
                       <p className="text-red-600 text-sm">{errors.firstName}</p>
@@ -130,7 +130,7 @@ const SellerRegister = () => {
                       value={formData.lastName}
                       onChange={handleInputChange}
                       className="input"
-                      placeholder="Nagvanshi"
+                      placeholder="Last Name"
                     />
                     {errors.lastName && (
                       <p className="text-red-600 text-sm">{errors.lastName}</p>
