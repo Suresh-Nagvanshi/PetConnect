@@ -8,6 +8,8 @@ const bcrypt = require('bcrypt');
 router.post('/login', async (req, res) => {
   const { email, password, role } = req.body;
 
+  console.log(`Login attempt for role: ${role}, email: ${email}`);
+
   try {
     let user;
 
@@ -22,6 +24,7 @@ router.post('/login', async (req, res) => {
     }
 
     if (!user) {
+      console.log('User not found');
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
@@ -32,7 +35,7 @@ router.post('/login', async (req, res) => {
 
     // Authentication successful; optionally create session or JWT token here.
 
-    res.json({ message: 'Login successful', role, userId: user._id,firstName: user.firstName });
+    res.json({ message: 'Login successful', role, userId: user._id, firstName: user.firstName });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Server error' });
