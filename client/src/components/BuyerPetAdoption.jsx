@@ -18,11 +18,16 @@ const PetCard = ({ pet }) => {
             : "https://placehold.co/600x400?text=No+Image"
         }
         alt={pet.petName}
-        className="w-full h-48 object-cover"
+        className="w-full h-100 object-cover object-contain"
       />
       <div className="p-4">
         <h3 className="text-xl font-bold truncate">{pet.petName}</h3>
         <p className="text-gray-600">{pet.animalType}</p>
+        {pet.seller && (
+          <p className="text-gray-500 mb-1">
+            Seller: {pet.seller.firstName} {pet.seller.lastName}
+          </p>
+        )}
         <p className="mt-2 text-gray-700">{pet.shortDescription}</p>
         {locationUrl && (
           <a
@@ -39,7 +44,7 @@ const PetCard = ({ pet }) => {
   );
 };
 
-function PetAdoption() {
+function BuyerPetAdoption() {
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -122,6 +127,12 @@ function PetAdoption() {
                   <br />
                   {pet.animalType}
                   <br />
+                  {pet.seller && (
+                    <>
+                      Seller: {pet.seller.firstName} {pet.seller.lastName}
+                      <br />
+                    </>
+                  )}
                   Location: {pet.seller.city}, {pet.seller.state}
                   <br />
                   <a
@@ -141,4 +152,4 @@ function PetAdoption() {
   );
 }
 
-export default PetAdoption;
+export default BuyerPetAdoption;
