@@ -21,7 +21,7 @@ const authRoutes = require('./routes/auth');
 const geocodeRouter = require('./routes/geocode');
 const petRoutes = require('./routes/pets');
 const path = require('path');
-
+const bookingsRouter = require('./routes/bookings');
 
 // Use routers for their endpoints
 app.use('/api/products', productsRouter);
@@ -33,6 +33,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/geocode', geocodeRouter);
 app.use('/api/pets', petRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/api/bookings', bookingsRouter);
 
 // Feedback routes (POST + GET)
 app.post('/api/feedbacks', async (req, res) => {

@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-// We need to import 'Link' to create a navigation link to the register page.
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { AuthContext } from "./AuthContext";
 
 function Login() {
   const navigate = useNavigate();
-  const [activeRole, setActiveRole] = useState('buyer');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { login } = useContext(AuthContext);
+  const [activeRole, setActiveRole] = useState("buyer");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
   useEffect(() => {
-    // If any role is already logged in, redirect to its home
     const roleToPath = {
-      buyer: '/buyer_home',
-      seller: '/seller_home',
-      veterinarian: '/vet_home'
+      buyer: "/buyer_home/petadoption",
+      seller: "/seller_home/listanimals",
+      veterinarian: "/vet_home/listservices",
     };
     for (const [k, path] of Object.entries(roleToPath)) {
       if (localStorage.getItem(k)) {
@@ -27,47 +27,49 @@ function Login() {
   const roleButtonClasses = (role) =>
     `flex-1 py-3 px-4 rounded-lg font-semibold text-center transition-all duration-300 ${
       activeRole === role
-        ? 'bg-white text-blue-600 shadow-md'
-        : 'text-gray-600 hover:bg-gray-200 hover:text-blue-600'
+        ? "bg-white text-blue-600 shadow-md"
+        : "text-gray-600 hover:bg-gray-200 hover:text-blue-600"
     } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`;
 
   const handleLogin = () => {
-    fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, role: activeRole }),
     })
-      .then((res) => {
-        console.log('HTTP status:', res.status);
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((data) => {
-        console.log('Login response:', data);
         if (data.error) {
           alert(data.error);
           return;
         }
 
-        // Persist role-specific object and clear others
-        const role = data.role || activeRole; // fallback to selected role
+        const role = data.role || activeRole;
         const userObj = {
-          firstName: data.firstName || 'User',
-           _id: data.userId,
-          email: email,
-          role
+          firstName: data.firstName || "User",
+          _id: data.userId,
+          email,
+          role,
         };
-        ['buyer', 'seller', 'veterinarian', 'vet'].forEach((k) => localStorage.removeItem(k));
-        // store as buyer | seller | vet (normalize vet key to 'vet')
-        const storageKey = role === 'veterinarian' ? 'vet' : role;
+        ["buyer", "seller", "veterinarian", "vet"].forEach((k) =>
+          localStorage.removeItem(k)
+        );
+        const storageKey = role === "veterinarian" ? "vet" : role;
         localStorage.setItem(storageKey, JSON.stringify(userObj));
 
-        if (storageKey === 'buyer') navigate('/buyer_home/petadoption', { replace: true });
-        else if (storageKey === 'seller') navigate('/seller_home/listanimals', { replace: true });
-        else if (storageKey === 'vet') navigate('/vet_home/listservices', { replace: true });
+        // Update auth context
+        login(userObj);
+
+        if (storageKey === "buyer")
+          navigate("/buyer_home/petadoption", { replace: true });
+        else if (storageKey === "seller")
+          navigate("/seller_home/listanimals", { replace: true });
+        else if (storageKey === "vet")
+          navigate("/vet_home/listservices", { replace: true });
       })
       .catch((err) => {
-        console.error('Login failed:', err);
-        alert('Login failed');
+        console.error("Login failed:", err);
+        alert("Login failed");
       });
   };
 
@@ -80,15 +82,44 @@ function Login() {
         </div>
 
         <div className="flex bg-gray-100 p-1 space-x-1">
-          <button onClick={() => setActiveRole('buyer')} className={roleButtonClasses('buyer')} type="button">Buyer</button>
-          <button onClick={() => setActiveRole('seller')} className={roleButtonClasses('seller')} type="button">Seller</button>
-          <button onClick={() => setActiveRole('veterinarian')} className={roleButtonClasses('veterinarian')} type="button">Veterinarian</button>
+          <button
+            onClick={() => setActiveRole("buyer")}
+            className={roleButtonClasses("buyer")}
+            type="button"
+          >
+            Buyer
+          </button>
+          <button
+            onClick={() => setActiveRole("seller")}
+            className={roleButtonClasses("seller")}
+            type="button"
+          >
+            Seller
+          </button>
+          <button
+            onClick={() => setActiveRole("veterinarian")}
+            className={roleButtonClasses("veterinarian")}
+            type="button"
+          >
+            Veterinarian
+          </button>
         </div>
 
         <div className="p-6 sm:p-8">
-          <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }} className="space-y-4">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleLogin();
+            }}
+            className="space-y-4"
+          >
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Email Address
+              </label>
               <input
                 id="email"
                 type="email"
@@ -97,11 +128,17 @@ function Login() {
                 placeholder={`Enter your ${activeRole} email`}
                 required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)} />
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Password
+              </label>
               <input
                 id="password"
                 type="password"
@@ -110,56 +147,47 @@ function Login() {
                 placeholder="Enter your password"
                 required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)} />
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
 
             <div className="flex items-center justify-between">
               <label className="flex items-center">
-                <input type="checkbox" checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
                 <span className="ml-2 text-sm text-gray-600">Remember me</span>
               </label>
-              <a href="#" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">Forgot password?</a>
+              <a
+                href="#"
+                className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+              >
+                Forgot password?
+              </a>
             </div>
 
             <button
               type="submit"
-              className="w-full mt-6 bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+              className="w-full mt-6 bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+            >
               Sign In as {activeRole.charAt(0).toUpperCase() + activeRole.slice(1)}
             </button>
           </form>
 
-          {/* Social Login Buttons */}
-          <div className="mt-6 space-y-4">
-            <button
-              type="button"
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors text-gray-700 font-semibold"
-              aria-label="Sign in with Google"
-            >
-              <i className="fab fa-google fa-lg"></i>
-              Continue with Google
-            </button>
-
-            <button
-              type="button"
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors text-gray-700 font-semibold"
-              aria-label="Sign in with Facebook"
-            >
-              <i className="fab fa-facebook-f fa-lg"></i>
-              Continue with Facebook
-            </button>
-          </div>
-          
-          {/* --- NEW: Register Link --- */}
-          {/* This is the new section you requested. */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              First time here?{' '}
-              <Link to="/register" className="font-semibold text-blue-600 hover:text-blue-800 transition-colors">
+              First time here?{" "}
+              <Link
+                to="/register"
+                className="font-semibold text-blue-600 hover:text-blue-800 transition-colors"
+              >
                 Register now
               </Link>
             </p>
           </div>
-
         </div>
       </div>
     </div>

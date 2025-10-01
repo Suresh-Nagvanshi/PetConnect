@@ -1,13 +1,40 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import { AuthContext } from "./AuthContext";
 
-// Pet Card component
-const PetCard = ({ pet }) => {
+// Modal Component with blurred background
+const Modal = ({ message, onClose }) => {
+  return (
+    <div
+      className="fixed inset-0 flex items-center justify-center z-50"
+      style={{
+        backgroundColor: "rgba(255, 255, 255, 0.25)", // Light transparent overlay
+        backdropFilter: "blur(8px)", // Blur background
+        WebkitBackdropFilter: "blur(8px)", // Safari support
+      }}
+    >
+      <div className="bg-white p-6 rounded-lg shadow-lg relative max-w-sm w-full">
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 text-2xl font-bold"
+          aria-label="Close modal"
+        >
+          &times;
+        </button>
+        <p className="text-center text-lg font-semibold">{message}</p>
+      </div>
+    </div>
+  );
+};
+
+const PetCard = ({ pet, onBook }) => {
   const locationUrl =
     pet.seller?.latitude && pet.seller?.longitude
       ? `https://www.openstreetmap.org/?mlat=${pet.seller.latitude}&mlon=${pet.seller.longitude}#map=15/${pet.seller.latitude}/${pet.seller.longitude}`
       : null;
+
+  const canBook = pet.status === "available";
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
@@ -39,18 +66,39 @@ const PetCard = ({ pet }) => {
             View Location
           </a>
         )}
+        <button
+          onClick={() => onBook(pet._id)}
+          disabled={!canBook}
+          className={`mt-4 w-full py-2 rounded-md text-white ${
+            canBook
+              ? "bg-green-600 hover:bg-green-700"
+              : "bg-gray-400 cursor-not-allowed"
+          }`}
+        >
+          {canBook ? "Book Now" : "Not Available"}
+        </button>
       </div>
     </div>
   );
 };
 
-function BuyerPetAdoption() {
+const BuyerPetAdoption = () => {
+  const { user } = useContext(AuthContext);
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
+  const getBuyerId = () => user?._id || null;
 
   useEffect(() => {
+    fetchPets();
+  }, []);
+
+  const fetchPets = () => {
+    setLoading(true);
     fetch("/api/pets")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch pets");
@@ -64,7 +112,36 @@ function BuyerPetAdoption() {
         setError("Could not load pets at this time.");
         setLoading(false);
       });
-  }, []);
+  };
+
+  const handleBook = async (petId) => {
+    try {
+      const buyerId = getBuyerId();
+      if (!buyerId) {
+        setModalMessage("You must be logged in to book a pet.");
+        setModalVisible(true);
+        return;
+      }
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ petId, buyerId }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Booking failed");
+
+      setModalMessage("Successfully booked pet!");
+      setModalVisible(true);
+    } catch (err) {
+      setModalMessage(err.message);
+      setModalVisible(true);
+    }
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    fetchPets(); // Refresh pets list to update status after booking
+  };
 
   const filteredPets = pets.filter(
     (pet) =>
@@ -92,7 +169,9 @@ function BuyerPetAdoption() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-12">
         {filteredPets.length > 0 ? (
-          filteredPets.map((pet) => <PetCard key={pet._id} pet={pet} />)
+          filteredPets.map((pet) => (
+            <PetCard key={pet._id} pet={pet} onBook={handleBook} />
+          ))
         ) : (
           <p className="col-span-full text-center text-gray-500">
             No pets found matching your criteria.
@@ -148,8 +227,10 @@ function BuyerPetAdoption() {
             )
         )}
       </MapContainer>
+
+      {modalVisible && <Modal message={modalMessage} onClose={closeModal} />}
     </div>
   );
-}
+};
 
 export default BuyerPetAdoption;
