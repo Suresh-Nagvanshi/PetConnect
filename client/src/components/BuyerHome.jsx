@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
 
 function BuyerHome() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [buyerName, setBuyerName] = useState('Buyer');
-  const [setSellers] = useState([]);
+  const [buyerLinks, setBuyerLinks] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,12 +17,15 @@ function BuyerHome() {
     }
   }, []);
 
-  // Fetch sellers data for map
   useEffect(() => {
-    fetch('http://localhost:5000/api/sellers') // Adjust URL as needed
-      .then(res => res.json())
-      .then(data => setSellers(data))
-      .catch(console.error);
+    // Default buyer routes with added appointments
+    const defaultLinks = [
+      { to: '/buyer_home/petadoption', label: 'Pet Adoption' },
+      { to: '/buyer_home/editprofile', label: 'Edit Profile' },
+      { to: '/buyer_home/feedback', label: 'Feedback' },
+      { to: '/buyer_home/appointments', label: 'Appointments' }, // New route
+    ];
+    setBuyerLinks(defaultLinks);
   }, []);
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
@@ -47,12 +48,10 @@ function BuyerHome() {
         </button>
       )}
 
-      <Sidebar isOpen={sidebarOpen} onToggle={toggleSidebar} buyerName={buyerName} onLogout={handleLogout} />
+      <Sidebar isOpen={sidebarOpen} onToggle={toggleSidebar} buyerName={buyerName} onLogout={handleLogout} links={buyerLinks} />
 
       <div className={`flex-grow transition-all duration-300 ${sidebarOpen ? 'ml-72' : 'ml-0'} p-6 md:p-10`}>
-        {/* Your existing page content goes here */}
         <Outlet />
-        
       </div>
     </div>
   );

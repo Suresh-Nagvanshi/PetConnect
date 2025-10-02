@@ -43,7 +43,8 @@ function VetHome() {
         onLogout={handleLogout}
         links={[
           { to: '/vet_home/listservices', label: 'List Services' },
-          { to: '/vet_home/feedback', label: 'Feedback' }
+          { to: '/vet_home/feedback', label: 'Feedback' },
+          {to: '/vet_home/appointments', label: 'Appointments'}
         ]}
       />
 

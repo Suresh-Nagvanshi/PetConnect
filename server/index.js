@@ -21,7 +21,9 @@ const authRoutes = require('./routes/auth');
 const geocodeRouter = require('./routes/geocode');
 const petRoutes = require('./routes/pets');
 const path = require('path');
-const bookingsRouter = require('./routes/bookings');
+const bookingsRouter = require('./routes/bookings'); // pet bookings router
+const servicesRoutes = require('./routes/services'); // vet services router
+const serviceBookingsRouter = require('./routes/serviceBookings'); // vet service 
 
 // Use routers for their endpoints
 app.use('/api/products', productsRouter);
@@ -33,7 +35,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/geocode', geocodeRouter);
 app.use('/api/pets', petRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/api/bookings', bookingsRouter);
+app.use('/api/bookings', bookingsRouter); // for pet bookings
+app.use('/api/services', servicesRoutes); // for vet services
+app.use('/api/servicebookings', serviceBookingsRouter); // for vet bookings
 
 // Feedback routes (POST + GET)
 app.post('/api/feedbacks', async (req, res) => {
@@ -68,11 +72,11 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/petconnec
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log("Connected to MongoDB"))
-.catch((err) => {
-  console.error("MongoDB connection error:", err);
-  // Don't exit the process, but log the error
-});
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+    // Don't exit the process, but log the error
+  });
 
 // Add error handling middleware
 app.use((err, req, res, next) => {

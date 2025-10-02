@@ -44,7 +44,8 @@ function SellerHome() {
         links={[
           { to: '/seller_home/listanimals', label: 'List Animals' },
           { to: '/seller_home/listproducts', label: 'List Products' },
-          { to: '/seller_home/feedback', label: 'Feedback' }
+          { to: '/seller_home/feedback', label: 'Feedback' },
+          { to: '/seller_home/appointments', label: 'Book Appointment' }
         ]}
       />
 

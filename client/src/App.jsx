@@ -32,6 +32,8 @@ import ShowFeedback from './components/ShowFeedback.jsx';
 import BuyerFeedbackForm from './components/BuyerFeedbackForm.jsx';
 import SellerFeedbackForm from './components/SellerFeedbackForm.jsx';
 import VetFeedbackForm from './components/VetFeedbackForm.jsx';
+import AppointmentBooking from './components/AppointmentBooking.jsx';
+import VetAppointments from './components/VetAppointments.jsx';
 
 
 // Private route components for authentication checks
@@ -121,6 +123,7 @@ function AppContent() {
           <Route path="petadoption" element={<BuyerPetAdoption />} />
           <Route path="editprofile" element={<BuyerEditProfile />} />
           <Route path="feedback" element={<BuyerFeedbackForm />} />
+          <Route path="appointments" element={<AppointmentBooking />} />
         </Route>
 
         {/* Seller Dashboard with nested routes */}
@@ -136,6 +139,7 @@ function AppContent() {
           <Route path="listanimals" element={<SellerListAnimals />} />
           <Route path="listproducts" element={<SellerListProducts />} />
           <Route path="feedback" element={<SellerFeedbackForm />} />
+          <Route path="appointments" element={<AppointmentBooking />} />
         </Route>
 
         {/* Vet Dashboard with nested routes */}
@@ -150,6 +154,7 @@ function AppContent() {
           <Route index element={<VetListServices />} />
           <Route path="listservices" element={<VetListServices />} />
           <Route path="feedback" element={<VetFeedbackForm />} />
+          <Route path="appointments" element={<VetAppointments />} />
         </Route>
       </Routes>
       <Footer />
