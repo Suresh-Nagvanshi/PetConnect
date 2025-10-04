@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from "./AuthContext"; 
 
-// --- MAIN APPOINTMENT BOOKING COMPONENT ---
-
 function AppointmentBooking() {
   // Get user information from localStorage
   const buyer = JSON.parse(localStorage.getItem('buyer'));
@@ -37,7 +35,7 @@ function AppointmentBooking() {
     try {
       const endpoint = userType === 'buyer'
         ? `/api/servicebookings/buyer-appointments/${userId}`
-                : `/api/servicebookings/seller-appointments/${userId}`;
+        : `/api/servicebookings/seller-appointments/${userId}`;
 
       const res = await fetch(endpoint);
       const data = await res.json();
@@ -206,22 +204,25 @@ function AppointmentBooking() {
                                                     <p className="text-sm text-red-600 mt-1"><strong>Reason:</strong> {booking.declineReason}</p>
                                                 )}
                                             </div>
-                                            <span className={`font-semibold text-xs px-2.5 py-1 rounded-full ${
-                                                booking.status === 'accepted' ? 'bg-green-100 text-green-700' :
-                                                booking.status === 'declined' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
-                                            }`}>
-                                                {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
-                                            </span>
+                                            <div className="flex flex-col items-end gap-2">
+                                                <span className={`font-semibold text-xs px-2.5 py-1 rounded-full ${
+                                                    booking.status === 'accepted' ? 'bg-green-100 text-green-700' :
+                                                    booking.status === 'declined' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
+                                                }`}>
+                                                    {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                                                </span>
+                                                {booking.status === 'declined' && (
+                                                    <button
+                                                        onClick={() => handleDelete(booking._id)}
+                                                        title="Delete this booking"
+                                                        className="text-red-500 hover:text-red-700 text-xl font-bold mt-2"
+                                                        style={{ marginLeft: "8px" }}
+                                                    >
+                                                        &times;
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
-                                        {booking.status === 'declined' && (
-                                            <button
-                                                onClick={() => handleDelete(booking._id)}
-                                                title="Delete this booking"
-                                                className="absolute top-3 right-3 text-red-500 hover:text-red-700 text-xl font-bold"
-                                            >
-                                                &times;
-                                            </button>
-                                        )}
                                     </li>
                                 );
                             })}

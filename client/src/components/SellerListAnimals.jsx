@@ -50,7 +50,6 @@ function SellerListAnimals() {
     const files = Array.from(e.target.files);
     setImageFiles(files);
 
-    // Generate image preview URLs
     const fileReaders = [];
     const urls = [];
 
@@ -59,7 +58,6 @@ function SellerListAnimals() {
       fileReaders.push(reader);
       reader.onload = (ev) => {
         urls[i] = ev.target.result;
-        // If all images are loaded, set previews
         if (urls.filter(Boolean).length === files.length) {
           setImagePreviewUrls(urls);
         }
@@ -70,7 +68,6 @@ function SellerListAnimals() {
     if (!files.length) setImagePreviewUrls([]);
   };
 
-  // Fetch animals and bookings on mount
   useEffect(() => {
     fetchAnimalsAndBookings();
   }, []);
@@ -97,13 +94,11 @@ function SellerListAnimals() {
     }
   };
 
-  // Map pet _id to booking info
   const bookingByPetId = bookings.reduce((acc, booking) => {
     acc[booking.pet._id] = booking;
     return acc;
   }, {});
 
-  // Listing form submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -140,7 +135,6 @@ function SellerListAnimals() {
       });
       setImageFiles([]);
       setImagePreviewUrls([]);
-      // Refresh animals list
       fetchAnimalsAndBookings();
     } catch (error) {
       setModalMessage(error.message);
@@ -149,7 +143,6 @@ function SellerListAnimals() {
     setLoading(false);
   };
 
-  // Handler to update booking & pet status
   const updateBookingStatus = async (bookingId, newStatus) => {
     try {
       const res = await fetch(`/api/bookings/${bookingId}`, {
@@ -180,7 +173,6 @@ function SellerListAnimals() {
           </p>
         </div>
 
-        {/* Animal listing form */}
         <form
           className="bg-white rounded-xl shadow-lg p-6 max-w-xl mx-auto flex flex-col space-y-5"
           onSubmit={handleSubmit}
@@ -277,7 +269,6 @@ function SellerListAnimals() {
           </button>
         </form>
 
-        {/* Animals list */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6 overflow-y-auto max-h-[80vh]">
             {animals.length === 0 ? (
@@ -310,7 +301,9 @@ function SellerListAnimals() {
                         <p className="text-gray-700 mt-2 max-w-md">{a.shortDescription}</p>
                       )}
 
-                      {booking ? (
+                      {a.status === "sold" ? (
+                        <p className="mt-2 font-semibold text-red-600">Adopted</p>
+                      ) : booking ? (
                         <>
                           <p className="mt-2 py-2 border-t border-gray-200 font-semibold">
                             Adoption Request Status:{" "}
