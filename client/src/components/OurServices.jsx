@@ -14,13 +14,12 @@ function OurServices() {
       </div>
 
       {/* Grid Section */}
-      <div className="w-full px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-6 sm:px-8 lg:px-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 
           {/* Card 1: Pet Adoption */}
           <Link to="/petadoption" className="block">
             <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transform transition duration-300 p-8 text-center h-full flex flex-col">
-              {/* Circular container with overflow-hidden */}
               <div className="flex items-center justify-center h-40 w-40 rounded-full bg-blue-100 mx-auto mb-6 overflow-hidden">
                 <img
                   src="/petadoption.png"
@@ -37,7 +36,6 @@ function OurServices() {
 
           {/* Card 2: Veterinary Services */}
           <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transform transition duration-300 p-8 text-center h-full flex flex-col">
-            {/* Circular container with overflow-hidden */}
             <div className="flex items-center justify-center h-40 w-40 rounded-full bg-green-100 mx-auto mb-6 overflow-hidden">
               <img
                 src="/vet.png"
@@ -54,7 +52,6 @@ function OurServices() {
           {/* Card 3: Pet Store */}
           <Link to="/petstore" className="block">
             <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transform transition duration-300 p-8 text-center h-full flex flex-col">
-              {/* Circular container with overflow-hidden */}
               <div className="flex items-center justify-center h-40 w-40 rounded-full bg-orange-100 mx-auto mb-6 overflow-hidden">
                 <img
                   src="/petstore.png"
@@ -70,20 +67,21 @@ function OurServices() {
           </Link>
 
           {/* Card 4: SmartCare AI */}
-          <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transform transition duration-300 p-8 text-center h-full flex flex-col">
-             {/* Circular container with overflow-hidden */}
-            <div className="flex items-center justify-center h-40 w-40 rounded-full bg-purple-100 mx-auto mb-6 overflow-hidden">
-              <img
-                src="/ai.png"
-                alt="SmartCare AI"
-                className="transform scale-150"
-              />
+          <Link to="/smartcare-ai" className="block">
+            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transform transition duration-300 p-8 text-center h-full flex flex-col">
+              <div className="flex items-center justify-center h-40 w-40 rounded-full bg-purple-100 mx-auto mb-6 overflow-hidden">
+                <img
+                  src="/ai.png"
+                  alt="SmartCare AI"
+                  className="transform scale-150"
+                />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">SmartCare AI</h3>
+              <p className="text-gray-600">
+                AI-powered advice to help you track and manage your pet’s health.
+              </p>
             </div>
-            <h3 className="text-xl font-semibold mb-2">SmartCare AI</h3>
-            <p className="text-gray-600">
-              AI-powered monitoring to track and manage your pet’s health and behavior.
-            </p>
-          </div>
+          </Link>
 
         </div>
       </div>

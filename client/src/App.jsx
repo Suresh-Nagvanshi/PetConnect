@@ -34,7 +34,7 @@ import SellerFeedbackForm from './components/SellerFeedbackForm.jsx';
 import VetFeedbackForm from './components/VetFeedbackForm.jsx';
 import AppointmentBooking from './components/AppointmentBooking.jsx';
 import VetAppointments from './components/VetAppointments.jsx';
-
+import ChatbotPage from './components/ChatbotPage.jsx';
 
 // Private route components for authentication checks
 function PrivateRouteBuyer({ children }) {
@@ -109,6 +109,9 @@ function AppContent() {
 
         <Route path="/petstore" element={<PetStore />} />
         <Route path="/map" element={<MapView />} />
+        
+        {/* Route for the SmartCare AI page */}
+        <Route path="/smartcare-ai" element={<ChatbotPage />} />
 
         {/* Buyer Dashboard with nested routes */}
         <Route
@@ -167,3 +170,4 @@ function App() {
 }
 
 export default App;
+
