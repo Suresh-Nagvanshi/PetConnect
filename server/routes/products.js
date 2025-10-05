@@ -3,6 +3,8 @@ const router = express.Router();
 const Product = require('../models/Product'); // Adjust if your path is different
 
 // GET /api/products
+console.log("Products router loaded");
+
 router.get('/', async (req, res) => {
   try {
     const products = await Product.find();
