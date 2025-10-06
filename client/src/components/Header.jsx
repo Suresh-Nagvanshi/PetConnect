@@ -32,10 +32,10 @@ function Header() {
         <ul className="hidden md:flex space-x-3 text-sm text-white italic">
           <li>
             <button
-              onClick={() => handleNavigate('/')}
+              onClick={() => handleNavigate('/smartcare-ai')}
               className="font-bold px-4 py-2 rounded-lg inline-flex items-center origin-center transform will-change-transform transition-transform duration-200 hover:bg-yellow-400 hover:text-black hover:shadow-md hover:scale-110 active:scale-95"
             >
-              Home
+              SmartCareAI
             </button>
           </li>
           <li>
