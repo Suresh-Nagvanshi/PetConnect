@@ -34,7 +34,7 @@ import SellerFeedbackForm from './components/SellerFeedbackForm.jsx';
 import VetFeedbackForm from './components/VetFeedbackForm.jsx';
 import AppointmentBooking from './components/AppointmentBooking.jsx';
 import VetAppointments from './components/VetAppointments.jsx';
-import ChatbotPage from './components/ChatbotPage.jsx';
+import ChatbotPage from './components/PetChatbotPage.jsx';
 
 // Private route components for authentication checks
 function PrivateRouteBuyer({ children }) {
