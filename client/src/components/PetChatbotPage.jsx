@@ -112,13 +112,12 @@ function PetChatbotPage() {
         <img src="/SmartCareAI.png" alt="SmartCare AI Avatar" className="ai-avatar" />
         <h1 className="ai-title">SmartCare AI</h1>
         <p className="ai-description">
-          **Multimodal Pet Health Advisor.** Upload an image of the issue (e.g., rash, lump) and describe the symptoms for an AI-powered initial assessment.
+          Multimodal Pet Health Advisor<br></br> Upload an image of the issue (e.g., rash, lump) and describe the symptoms for an AI-powered initial assessment.
         </p>
         <div className="example-prompts">
           <h3 className="prompts-title">Example descriptions:</h3>
           <ul>
             <li onClick={() => handleExamplePrompt("My dog has a red, swollen paw and is limping.")}>"My dog has a red, swollen paw and is limping."</li>
-            <li onClick={() => handleExamplePrompt("There is a small, firm lump on my cat's side.")}>"There is a small, firm lump on my cat's side."</li>
           </ul>
         </div>
       </div>
