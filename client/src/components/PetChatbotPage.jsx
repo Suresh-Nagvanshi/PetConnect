@@ -1,19 +1,33 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../styles/ChatbotPage.css';
 
-// Renamed to better reflect its function and avoid confusion
-function PetChatbotPage() { 
+// SVG Icon Components (replaces react-icons)
+const PaperclipIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+  </svg>
+);
+
+const TimesIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+);
+
+
+// Main Page Component
+function PetChatbotPage() {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
-  const [imageFile, setImageFile] = useState(null); // NEW: State to hold the image file
-  const [loading, setLoading] = useState(false); // NEW: State for loading/disabled button
+  const [imageFile, setImageFile] = useState(null);
+  const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Initial greeting from the bot
   useEffect(() => {
     setMessages([
       {
@@ -26,53 +40,52 @@ function PetChatbotPage() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-  
-  // Helper to convert the diagnosis text into rendered elements (e.g., handling bold text)
-  // NOTE: For a production app, use 'react-markdown' library for better safety and styling
+
+  // Render message with bold text support
   const renderMessageText = (text) => {
     return text.split('\n').map((line, i) => (
       <p key={i}>
-        {line.includes('**') ? 
-          line.split('**').map((part, j) => (
+        {line.includes('**')
+          ? line.split('**').map((part, j) =>
             j % 2 === 1 ? <strong key={j}>{part}</strong> : part
-          )) : 
-          line
+          )
+          : line
         }
       </p>
     ));
   };
 
-
-  // --- UPDATED HANDLER FOR MULTIMODAL REQUEST ---
+  // Main send handler
   const handleSendMessage = async (e) => {
     e.preventDefault();
     const prompt = inputValue.trim();
-    
-    // 1. Validation: Ensure both text and image are provided
+
     if (!prompt && !imageFile) {
-      alert("Please enter a symptom description AND upload an image.");
+      setMessages(prev => [...prev, { text: "Please provide a description and an image for the best results.", sender: 'bot' }]);
       return;
     }
-    
-    setLoading(true);
-    setInputValue(''); // Clear input box right away
-    setImageFile(null); // Clear image input
 
-    // Create the user message object for display
-    const userMessage = { text: prompt, sender: 'user', imageURL: imageFile ? URL.createObjectURL(imageFile) : null };
-    setMessages(prevMessages => [...prevMessages, userMessage]);
+    setLoading(true);
+    setInputValue('');
+    setImageFile(null);
+
+    const userMessage = {
+      text: prompt,
+      sender: 'user',
+      imageURL: imageFile ? URL.createObjectURL(imageFile) : null
+    };
+    setMessages(prev => [...prev, userMessage]);
 
     try {
-      // 2. Prepare the FormData object for server upload
       const formData = new FormData();
-      formData.append('prompt', prompt); 
-      // 'petImage' MUST match upload.single('petImage') in server/routes/gemini.js
-      formData.append('petImage', imageFile); 
-      
-      // 3. Call the server endpoint
+      formData.append('prompt', prompt);
+      if (imageFile) {
+        formData.append('petImage', imageFile);
+      }
+
       const response = await fetch('/api/gemini/diagnose', {
         method: 'POST',
-        body: formData, // The browser handles the Content-Type automatically
+        body: formData
       });
 
       const data = await response.json();
@@ -81,30 +94,30 @@ function PetChatbotPage() {
         throw new Error(data.error || 'Server error occurred during diagnosis.');
       }
 
-      // 4. Update state with the successful diagnosis text
-      const botResponse = { 
-          text: data.diagnosis, 
-          sender: 'bot' 
-      };
-      setMessages(prevMessages => [...prevMessages, botResponse]);
-      
+      const botResponse = { text: data.diagnosis, sender: 'bot' };
+      setMessages(prev => [...prev, botResponse]);
     } catch (err) {
-      console.error("API Call Error:", err);
-      const errorResponse = { 
-          text: `🚨 ERROR: ${err.message}. Please try again or check your server.`, 
-          sender: 'bot' 
+      const errorResponse = {
+        text: `🚨 ERROR: ${err.message}. Please try again.`,
+        sender: 'bot'
       };
-      setMessages(prevMessages => [...prevMessages, errorResponse]);
+      setMessages(prev => [...prev, errorResponse]);
     } finally {
       setLoading(false);
     }
   };
-  // ----------------------------------------------------
-  
-  // Remove example prompts as the focus is now multimodal diagnosis, not simple chat
-  const handleExamplePrompt = (prompt) => {
-    alert("This chat is now dedicated to image and symptom analysis. Please use the text input and file upload.");
-  };
+
+  // Simplified Image Preview Card
+  const imagePreview = imageFile && (
+    <div className="image-preview-card">
+      <img src={URL.createObjectURL(imageFile)} alt="Preview" />
+      <button className="remove-image-btn" type="button"
+        title="Remove image"
+        onClick={() => setImageFile(null)}>
+        <TimesIcon />
+      </button>
+    </div>
+  );
 
   return (
     <div className="chatbot-page-container">
@@ -112,12 +125,12 @@ function PetChatbotPage() {
         <img src="/SmartCareAI.png" alt="SmartCare AI Avatar" className="ai-avatar" />
         <h1 className="ai-title">SmartCare AI</h1>
         <p className="ai-description">
-          Multimodal Pet Health Advisor<br></br> Upload an image of the issue (e.g., rash, lump) and describe the symptoms for an AI-powered initial assessment.
+          Multimodal Pet Health Advisor<br /> Upload an image of the issue (e.g., rash, lump) and describe the symptoms for an AI-powered initial assessment.
         </p>
         <div className="example-prompts">
           <h3 className="prompts-title">Example descriptions:</h3>
           <ul>
-            <li onClick={() => handleExamplePrompt("My dog has a red, swollen paw and is limping.")}>"My dog has a red, swollen paw and is limping."</li>
+            <li>"My dog has a red, swollen paw and is limping."</li>
           </ul>
         </div>
       </div>
@@ -130,14 +143,11 @@ function PetChatbotPage() {
                 <img src="/SmartCareAI.png" alt="Bot Avatar" className="bot-avatar-chat" />
               )}
               <div className={`message ${message.sender}`}>
-                {/* NEW: Display the image the user uploaded */}
                 {message.sender === 'user' && message.imageURL && (
-                    <div className="user-uploaded-image-wrapper">
-                        <p>Image submitted:</p>
-                        <img src={message.imageURL} alt="User Uploaded" style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '8px' }} />
-                    </div>
+                  <div className="user-uploaded-image-wrapper">
+                    <img src={message.imageURL} alt="User Upload" className="user-uploaded-image" />
+                  </div>
                 )}
-                {/* Use the new render function for better display */}
                 {renderMessageText(message.text)}
               </div>
             </div>
@@ -145,50 +155,46 @@ function PetChatbotPage() {
           <div ref={messagesEndRef} />
           {loading && (
             <div className="message-container bot">
-                <div className="message bot loading">
-                    <p>Analyzing image and symptoms... 🔍</p>
-                </div>
+               <img src="/SmartCareAI.png" alt="Bot Avatar" className="bot-avatar-chat" />
+              <div className="message bot loading">
+                <p>Analyzing image and symptoms... 🔍</p>
+              </div>
             </div>
           )}
         </div>
-        
-        {/* --- UPDATED INPUT FORM --- */}
-        <form onSubmit={handleSendMessage} className="chat-input-form">
-          {/* NEW: File input area */}
-          <input
-            type="file"
-            id="image-upload"
-            accept="image/*"
-            style={{ display: 'none' }}
-            onChange={(e) => setImageFile(e.target.files[0])}
-            disabled={loading}
-          />
-          <label htmlFor="image-upload" className={`file-upload-label ${imageFile ? 'file-uploaded' : ''}`}>
-            {/* SVG for file upload icon (can be customized) */}
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-            </svg>
-            {imageFile ? imageFile.name.substring(0, 15) + '...' : 'Upload Image'}
-          </label>
 
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Describe your pet's symptoms here..."
-            className="chat-input"
-            disabled={loading}
-          />
-          <button type="submit" className="chat-send-button" disabled={loading || (!inputValue.trim() && !imageFile)}>
-            <svg className="send-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-            </svg>
-          </button>
-        </form>
-        {/* ----------------------------- */}
+        <div className="input-area">
+          {imagePreview}
+          <form onSubmit={handleSendMessage} className="chat-input-form">
+            <label htmlFor="image-upload" className="attach-button" aria-label="Upload Image">
+              <PaperclipIcon />
+            </label>
+            <input
+              type="file" id="image-upload" accept="image/*"
+              style={{ display: 'none' }}
+              onChange={(e) => setImageFile(e.target.files[0])}
+              disabled={loading}
+            />
+            <input
+              type="text" value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="Describe symptoms..."
+              className="chat-input"
+              disabled={loading}
+              autoFocus
+            />
+            <button type="submit" className="chat-send-button"
+              disabled={loading || (!inputValue.trim() && !imageFile)}>
+              <svg className="send-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+              </svg>
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
 }
 
 export default PetChatbotPage;
+
