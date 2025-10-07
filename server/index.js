@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors'); // Import CORS middleware
+const cors = require('cors'); 
 require('dotenv').config();
 
 const app = express();
@@ -9,7 +9,7 @@ app.use(express.json());
 
 // Enable CORS for frontend domains
 app.use(cors({
-  origin: ['https://petconnect-5.onrender.com', 'http://localhost:3000'] // Add your deployed frontend URL and localhost for dev
+  origin: ['https://petconnect-5.onrender.com', 'http://localhost:3000']
 }));
 
 // Import your models
@@ -26,13 +26,12 @@ const authRoutes = require('./routes/auth');
 const geocodeRouter = require('./routes/geocode');
 const petRoutes = require('./routes/pets');
 const path = require('path');
-const bookingsRouter = require('./routes/bookings'); // pet bookings router
-const servicesRoutes = require('./routes/services'); // vet services router
-const serviceBookingsRouter = require('./routes/serviceBookings'); // vet service bookings router
-const geminiRouter = require('./routes/gemini'); // Gemini AI router
+const bookingsRouter = require('./routes/bookings');
+const servicesRoutes = require('./routes/services');
+const serviceBookingsRouter = require('./routes/serviceBookings');
+const geminiRouter = require('./routes/gemini');
+const paymentRoutes = require('./routes/paymentServer');
 
-
-// Use routers for their endpoints
 app.use('/api/products', productsRouter);
 app.use('/api/contact', contactRoutes);
 app.use('/api/buyers', buyersRouter);
@@ -42,13 +41,13 @@ app.use('/api/auth', authRoutes);
 app.use('/api/geocode', geocodeRouter);
 app.use('/api/pets', petRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/api/bookings', bookingsRouter); // for pet bookings
-app.use('/api/services', servicesRoutes); // for vet services
-app.use('/api/servicebookings', serviceBookingsRouter); // for vet bookings
-app.use('/api/gemini', geminiRouter); // Gemini AI routes
+app.use('/api/bookings', bookingsRouter);
+app.use('/api/services', servicesRoutes);
+app.use('/api/servicebookings', serviceBookingsRouter);
+app.use('/api/gemini', geminiRouter);
+app.use('/api', paymentRoutes);
 
-
-// Feedback routes (POST + GET)
+// Feedback routes
 app.post('/api/feedbacks', async (req, res) => {
   try {
     const feedback = new Feedback(req.body);
@@ -60,7 +59,6 @@ app.post('/api/feedbacks', async (req, res) => {
   }
 });
 
-// GET route to fetch all feedbacks
 app.get('/api/feedbacks', async (req, res) => {
   try {
     const feedbacks = await Feedback.find({});
@@ -71,7 +69,7 @@ app.get('/api/feedbacks', async (req, res) => {
   }
 });
 
-// Root route - test server
+// Root test route
 app.get('/', (req, res) => {
   res.send('PetConnect backend is running!');
 });
@@ -84,16 +82,14 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/petconnec
 .then(() => console.log("Connected to MongoDB"))
 .catch((err) => {
   console.error("MongoDB connection error:", err);
-  // Don't exit the process, but log the error
 });
 
-// Add error handling middleware
+// Global error handler
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err);
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
