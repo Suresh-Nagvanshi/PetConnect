@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-const ProductCard = ({ product, onOpenDetails, onAddToCart }) => {
+
+const ProductCard = ({ product, onOpenDetails, onAddToCart, onBuyNow }) => {
   const formattedPrice = new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
@@ -37,26 +38,37 @@ const ProductCard = ({ product, onOpenDetails, onAddToCart }) => {
             {product.description}
           </p>
         )}
-        <div className="flex items-center justify-end mt-auto pt-2">
-          <div className="flex items-center gap-2">
-            <button
-              title="Add to Cart"
-              onClick={(e) => {
-                e.stopPropagation();
-                onAddToCart(product, e.currentTarget);
-              }}
-              className="h-10 w-10 grid place-items-center rounded-full bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              <span role="img" aria-label="cart">
-                🛒
-              </span>
-            </button>
-          </div>
+        <div className="flex items-center justify-end mt-auto pt-2 gap-2">
+          {/* Modified "Buy Now" button */}
+          <button
+            title="Buy Now"
+            onClick={(e) => {
+              e.stopPropagation();
+              onBuyNow(product, e.currentTarget);
+            }}
+            className="px-3 py-1.5 text-sm font-semibold rounded-lg bg-green-600 hover:bg-green-700 text-white transition-colors"
+          >
+            Buy Now
+          </button>
+          
+          <button
+            title="Add to Cart"
+            onClick={(e) => {
+              e.stopPropagation();
+              onAddToCart(product, e.currentTarget);
+            }}
+            className="h-9 w-9 grid place-items-center rounded-full bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+          >
+            <span role="img" aria-label="cart" className="text-lg">
+              🛒
+            </span>
+          </button>
         </div>
       </div>
     </div>
   );
 };
+
 
 function PetStore() {
   const [products, setProducts] = useState([]);
@@ -115,6 +127,13 @@ function PetStore() {
       return [...prev, { product, quantity: 1 }];
     });
     showToast("Added!", targetElement);
+  };
+  
+  // New "Buy Now" logic
+  const buyNow = (product, targetElement) => {
+    setCart([{ product, quantity: 1 }]);
+    setShowCustomerForm(true);
+    showToast("Buying now!", targetElement);
   };
 
   const removeFromCart = (productId) => {
@@ -306,58 +325,85 @@ function PetStore() {
 
       {/* Customer Form */}
       {showCustomerForm && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
-          <div className="bg-white rounded-2xl shadow-lg w-full max-w-md p-8 relative">
-            <h2 className="text-xl font-bold mb-4">Enter Your Details</h2>
-            <form onSubmit={handleCustomerFormSubmit}>
-              <input
-                name="name"
-                type="text"
-                required
-                value={customerDetails.name}
-                onChange={handleCustomerFormChange}
-                placeholder="Name"
-                className="w-full mb-3 p-2 border rounded"
-              />
-              <input
-                name="phone"
-                type="text"
-                required
-                value={customerDetails.phone}
-                onChange={handleCustomerFormChange}
-                placeholder="Phone"
-                className="w-full mb-3 p-2 border rounded"
-              />
-              <input
-                name="email"
-                type="email"
-                required
-                value={customerDetails.email}
-                onChange={handleCustomerFormChange}
-                placeholder="Email"
-                className="w-full mb-3 p-2 border rounded"
-              />
-              <textarea
-                name="address"
-                required
-                value={customerDetails.address}
-                onChange={handleCustomerFormChange}
-                placeholder="Address"
-                className="w-full mb-3 p-2 border rounded"
-              />
-              <div className="flex gap-2 mt-4">
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg p-8 transform transition-transform duration-300 scale-100">
+            <button
+              onClick={() => setShowCustomerForm(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-6">
+              Provide Your Details
+            </h2>
+            <form onSubmit={handleCustomerFormSubmit} className="space-y-5">
+              <div className="space-y-2">
+                <label htmlFor="name" className="text-sm font-medium text-gray-700">Full Name</label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  value={customerDetails.name}
+                  onChange={handleCustomerFormChange}
+                  placeholder="John Doe"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="phone" className="text-sm font-medium text-gray-700">Phone Number</label>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  required
+                  value={customerDetails.phone}
+                  onChange={handleCustomerFormChange}
+                  placeholder="+91 98765 43210"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="email" className="text-sm font-medium text-gray-700">Email Address</label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  value={customerDetails.email}
+                  onChange={handleCustomerFormChange}
+                  placeholder="you@example.com"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="address" className="text-sm font-medium text-gray-700">Shipping Address</label>
+                <textarea
+                  id="address"
+                  name="address"
+                  required
+                  rows="3"
+                  value={customerDetails.address}
+                  onChange={handleCustomerFormChange}
+                  placeholder="Your full address..."
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                />
+              </div>
+              <div className="flex gap-4 pt-4">
                 <button
                   type="button"
-                  className="flex-1 py-2 bg-gray-300 rounded"
                   onClick={() => setShowCustomerForm(false)}
+                  className="flex-1 py-3 font-semibold text-gray-700 bg-gray-200 rounded-xl hover:bg-gray-300 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2 bg-green-600 text-white rounded"
+                  className="flex-1 py-3 font-semibold text-white bg-green-600 rounded-xl hover:bg-green-700 transition-colors"
                 >
-                  Continue
+                  Continue to Billing
                 </button>
               </div>
             </form>
@@ -367,7 +413,7 @@ function PetStore() {
 
       {/* Billing Summary */}
       {showBillingSummary && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-lg w-full max-w-md p-8 relative">
             <h2 className="text-xl font-bold mb-4">Billing Summary</h2>
             <div className="mb-2"><strong>Total Products:</strong> {cart.length}</div>
@@ -433,6 +479,7 @@ function PetStore() {
                 product={product}
                 onOpenDetails={() => {}}
                 onAddToCart={addToCart}
+                onBuyNow={buyNow}
               />
             ))}
           </div>
