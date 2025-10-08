@@ -1,7 +1,23 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function OurServices() {
+  const navigate = useNavigate();
+
+  // Smooth navigation function for React Router links
+  const smoothNavigate = (path) => {
+    // First scroll to top smoothly
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+
+    // Then navigate after scrolling
+    setTimeout(() => {
+      navigate(path);
+    }, 500);
+  };
+
   return (
     <section className="py-16 bg-gray-100 w-full mt-10">
       {/* Section Title */}
@@ -18,7 +34,7 @@ function OurServices() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 
           {/* Card 1: Pet Adoption */}
-          <Link to="/petadoption" className="block">
+          <button onClick={() => smoothNavigate('/petadoption')} className="block">
             <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transform transition duration-300 p-8 text-center h-full flex flex-col">
               <div className="flex items-center justify-center h-40 w-40 rounded-full bg-blue-100 mx-auto mb-6 overflow-hidden">
                 <img
@@ -32,7 +48,7 @@ function OurServices() {
                 Find your perfect furry companion from a wide variety of adorable pets.
               </p>
             </div>
-          </Link>
+          </button>
 
           {/* Card 2: Veterinary Services */}
           <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transform transition duration-300 p-8 text-center h-full flex flex-col">
@@ -50,7 +66,7 @@ function OurServices() {
           </div>
 
           {/* Card 3: Pet Store */}
-          <Link to="/petstore" className="block">
+          <button onClick={() => smoothNavigate('/petstore')} className="block">
             <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transform transition duration-300 p-8 text-center h-full flex flex-col">
               <div className="flex items-center justify-center h-40 w-40 rounded-full bg-orange-100 mx-auto mb-6 overflow-hidden">
                 <img
@@ -64,10 +80,10 @@ function OurServices() {
                 All the essentials and toys your pets love — under one roof.
               </p>
             </div>
-          </Link>
+          </button>
 
           {/* Card 4: SmartCare AI */}
-          <Link to="/smartcare-ai" className="block">
+          <button onClick={() => smoothNavigate('/smartcare-ai')} className="block">
             <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transform transition duration-300 p-8 text-center h-full flex flex-col">
               <div className="flex items-center justify-center h-40 w-40 rounded-full bg-purple-100 mx-auto mb-6 overflow-hidden">
                 <img
@@ -81,7 +97,7 @@ function OurServices() {
                 AI-powered advice to help you track and manage your pet’s health.
               </p>
             </div>
-          </Link>
+          </button>
 
         </div>
       </div>
@@ -90,4 +106,3 @@ function OurServices() {
 }
 
 export default OurServices;
-

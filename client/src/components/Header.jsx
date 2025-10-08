@@ -14,11 +14,15 @@ function Header() {
     }
   }, [mobileOpen]);
 
+  // Smooth navigation function for React Router links
   const smoothNavigate = (path) => {
+    // First scroll to top smoothly
     window.scrollTo({
       top: 0,
       behavior: 'smooth',
     });
+    
+    // Then navigate after scrolling
     setTimeout(() => {
       navigate(path);
     }, 500);
