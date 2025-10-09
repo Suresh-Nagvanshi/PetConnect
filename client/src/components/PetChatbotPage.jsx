@@ -129,7 +129,6 @@ function PetChatbotPage() {
           <h3 className="prompts-title">Example descriptions:</h3>
           <ul>
             <li>"My dog has a red, swollen paw and is limping."</li>
-            <li>"Found a strange dry patch on my cat's skin."</li>
           </ul>
         </div>
       </div>
