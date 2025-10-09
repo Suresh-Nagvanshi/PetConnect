@@ -47,7 +47,7 @@ function Header() {
     <header className="fixed top-0 left-0 w-full bg-black z-50">
       <nav className="flex items-center justify-between w-full px-4 sm:px-6 py-3">
         <div className="flex items-center">
-          <img className="h-10 w-10 rounded-full" src="fav_icon.png" alt="Logo" />
+          <img className="h-10 w-10 rounded-full" src="/fav_icon.png" alt="Logo" />
           <Link
             to="/"
             className="ml-3 text-white italic text-2xl font-bold"

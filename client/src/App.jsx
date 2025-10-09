@@ -4,6 +4,7 @@ import { Routes, Route, useLocation, Navigate, useNavigate } from 'react-router-
 import { useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
 
+import AdminLogin from './components/AdminLogin';
 import Header from './components/Header.jsx';
 import Home from './components/Home.jsx';
 import TrendingAnimals from './components/TrendingAnimals.jsx';
@@ -159,6 +160,8 @@ function AppContent() {
           <Route path="feedback" element={<VetFeedbackForm />} />
           <Route path="appointments" element={<VetAppointments />} />
         </Route>
+        {/* Admin Login Route */}
+        <Route path="/admin/login" element={<AdminLogin />} />
       </Routes>
       <Footer />
     </>
